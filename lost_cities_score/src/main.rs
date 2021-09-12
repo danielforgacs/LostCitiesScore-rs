@@ -19,7 +19,7 @@ struct Player {
 
 impl Player {
     fn new() -> Self {
-        Player{ score: 0 }
+        Player { score: 0 }
     }
 }
 
@@ -28,7 +28,11 @@ fn main() {
 
     for round in 0..=2 {
         for player_number in 0..=1 {
-            println!("round {}, player {} enter cards:", round+1, player_number+1);
+            println!(
+                "round {}, player {} enter cards:",
+                round + 1,
+                player_number + 1
+            );
             let line = String::from("ddd23456789t");
             let line = String::from("5");
             let line = String::from("23456789");
@@ -47,7 +51,7 @@ fn main() {
     }
 
     for (index, player) in players.iter().enumerate() {
-        println!("player {} score: {}", index+1, player.score);
+        println!("player {} score: {}", index + 1, player.score);
     }
 }
 
@@ -62,11 +66,13 @@ fn calc_round_score(cards_text: String) -> i16 {
         // println!("c {}", card.to_digit(10).unwrap() as i16);
         match card {
             'd' => doubler += 1,
-            '2'|'3'|'4'|'5'|'6'|'7'|'8'|'9' => score += card.to_digit(10).unwrap() as i16,
+            '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => {
+                score += card.to_digit(10).unwrap() as i16
+            }
             't' => score += 10,
             _ => panic!("Bad card char: {}", card),
         };
-    };
+    }
 
     println!("score raw: {}", score);
     score = (score - 20) * (doubler as i16 + 1);
@@ -78,7 +84,6 @@ fn calc_round_score(cards_text: String) -> i16 {
     score
 }
 
-
 #[test]
 fn test_calc_round_score() {
     assert_eq!(calc_round_score("5".to_string()), -15);
@@ -87,11 +92,13 @@ fn test_calc_round_score() {
     assert_eq!(calc_round_score("d".to_string()), -40);
     assert_eq!(calc_round_score("dd".to_string()), -60);
     assert_eq!(calc_round_score("ddd".to_string()), -80);
-    assert_eq!(calc_round_score("2345678".to_string()), 2+3+4+5+6+7+8-20);
-    assert_eq!(calc_round_score("23456789".to_string()), 44-20+8);
-    assert_eq!(calc_round_score("23456789t".to_string()), 2+3+4+5+6+7+8+9+10-20+8);
-
-
-    
-    
+    assert_eq!(
+        calc_round_score("2345678".to_string()),
+        2 + 3 + 4 + 5 + 6 + 7 + 8 - 20
+    );
+    assert_eq!(calc_round_score("23456789".to_string()), 44 - 20 + 8);
+    assert_eq!(
+        calc_round_score("23456789t".to_string()),
+        2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 - 20 + 8
+    );
 }
