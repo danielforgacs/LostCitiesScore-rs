@@ -24,13 +24,22 @@ impl Player {
 }
 
 fn main() {
-    let players: [Player; 2] = [Player::new(), Player::new()];
+    let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 1..=3 {
-        for user in 1..=2 {
-            println!("round {}, user {} cards:", round, user);
+        for player_number in 1..=2 {
+            println!("round {}, player {} cards:", round, player_number);
             let mut line = String::new();
             let result = io::stdin().read_line(&mut line);
+            match result {
+                Ok(_) => {},
+                Err(err) => {
+                    println!("Could not read player input!");
+                    println!("Error: {}", err);
+                    return
+                }
+            }
+            players[player_number-1].score += 1;
         }
     }
 
