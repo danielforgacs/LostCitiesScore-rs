@@ -11,16 +11,17 @@ game:
         player 2: "d2 d3 d4 678 t"
 */
 
-use std::io::stdin;
+use std::io;
 
 fn main() {
     let player_1_score = 0_i16;
     let player_2_score = 0_i16;
 
     for round in 1..=3 {
-        println!("round: {}", round);
         for user in 1..=2 {
-            println!("  user: {}", user);
+            println!("round {}, user {} cards:", round, user);
+            let mut line = String::new();
+            let result = io::stdin().read_line(&mut line);
         }
     }
 
