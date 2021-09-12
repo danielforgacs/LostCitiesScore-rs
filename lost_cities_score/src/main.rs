@@ -26,31 +26,9 @@ impl Player {
 fn main() {
     let mut players: [Player; 2] = [Player::new(), Player::new()];
 
-    let wip_scores: [&str; 6] = [
-        "2",
-        "2 2",
-        "d 2 2",
-        "",
-        "",
-        "",
-    ];
-
     for round in 0..=2 {
         for player_number in 0..=1 {
             println!("round {}, player {} enter cards:", round+1, player_number+1);
-            let line = match (round, player_number) {
-                (0, 0) => wip_scores[0],
-                (0, 1) => wip_scores[1],
-                (1, 0) => wip_scores[2],
-                (1, 1) => wip_scores[3],
-                (2, 0) => wip_scores[4],
-                (2, 1) => wip_scores[5],
-                _ => "[ERROR]",
-            };
-            let line = line.to_string();
-            // let line = "LJKH".to_string();
-            // println!("{} - {}", round, player_number);
-/*
             let mut line = String::new();
             let result = io::stdin().read_line(&mut line);
             match result {
@@ -61,7 +39,6 @@ fn main() {
                     return
                 }
             }
-*/
             players[player_number].score += calc_round_score(line);
         }
     }
