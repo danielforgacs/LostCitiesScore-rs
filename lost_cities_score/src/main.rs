@@ -78,7 +78,9 @@ fn test_calc_round_score() {
     assert_eq!(calc_round_score("5".to_string()), -15);
     assert_eq!(calc_round_score("d5".to_string()), -30);
     assert_eq!(calc_round_score("dd5".to_string()), -45);
-    // assert_eq!(calc_round_score("dd".to_string()), -20 * 3);
+    assert_eq!(calc_round_score("d".to_string()), -40);
+    assert_eq!(calc_round_score("dd".to_string()), -60);
+    assert_eq!(calc_round_score("ddd".to_string()), -80);
     // assert_eq!(calc_round_score("ddd".to_string()), -20 * 4);
     // assert_eq!(calc_round_score("t".to_string()), -10);
 
