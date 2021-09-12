@@ -29,16 +29,17 @@ fn main() {
     for round in 0..=2 {
         for player_number in 0..=1 {
             println!("round {}, player {} enter cards:", round+1, player_number+1);
-            let mut line = String::new();
-            let result = io::stdin().read_line(&mut line);
-            match result {
-                Ok(_) => {},
-                Err(err) => {
-                    println!("Could not read player input!");
-                    println!("Error: {}", err);
-                    return
-                }
-            }
+            let mut line = String::from("ddd23456789t");
+            // let mut line = String::new();
+            // let result = io::stdin().read_line(&mut line);
+            // match result {
+            //     Ok(_) => {},
+            //     Err(err) => {
+            //         println!("Could not read player input!");
+            //         println!("Error: {}", err);
+            //         return
+            //     }
+            // }
             players[player_number].score += calc_round_score(line);
         }
     }
@@ -50,5 +51,11 @@ fn main() {
 
 fn calc_round_score(cards_text: String) -> i16 {
     println!("{}", cards_text.trim());
-    2
+    -20
+}
+
+
+#[test]
+fn test_calc_round_score() {
+    assert_eq!(calc_round_score("d".to_string()), -20);
 }
