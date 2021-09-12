@@ -56,14 +56,10 @@ fn main() {
 }
 
 fn calc_round_score(cards_text: String) -> i16 {
-    // println!("{}", cards_text.trim());
     let mut score = 0_i16;
     let mut doubler = 0_u8;
 
-    println!("cards in: {}", cards_text);
-
     for card in cards_text.trim().chars() {
-        // println!("c {}", card.to_digit(10).unwrap() as i16);
         match card {
             'd' => doubler += 1,
             '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => {
@@ -74,13 +70,12 @@ fn calc_round_score(cards_text: String) -> i16 {
         };
     }
 
-    println!("score raw: {}", score);
     score = (score - 20) * (doubler as i16 + 1);
-    println!("score raw 2: {}", score);
+
     if cards_text.len() >= 8 {
         score += 20;
     };
-    println!("score updated: {}", score);
+
     score
 }
 
@@ -102,18 +97,42 @@ fn test_calc_round_score() {
         2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 - 20 + 20
     );
     assert_eq!(calc_round_score("7891".to_string()), 14); // ['', ],
-    assert_eq!(calc_round_score("d7891".to_string()), 14*2); // ['', ],
-    assert_eq!(calc_round_score("dd7891".to_string()), 14*3); // ['', ],
-    assert_eq!(calc_round_score("dd789t".to_string()), 14*3); // ['', ],
+    assert_eq!(calc_round_score("d7891".to_string()), 14 * 2); // ['', ],
+    assert_eq!(calc_round_score("dd7891".to_string()), 14 * 3); // ['', ],
+    assert_eq!(calc_round_score("dd789t".to_string()), 14 * 3); // ['', ],
     assert_eq!(calc_round_score("2".to_string()), -18); // ['', ],
-    assert_eq!(calc_round_score("23".to_string()), -20+2+3); // ['', ],
-    assert_eq!(calc_round_score("234".to_string()), -20+2+3+4); // ['', ],
-    assert_eq!(calc_round_score("23456789".to_string()), -20+2+3+4+5+6+7+8+9 +20); // ['', ],
-    assert_eq!(calc_round_score("2345678".to_string()), -20+2+3+4+5+6+7+8); // ['', ],
-    assert_eq!(calc_round_score("d23456789".to_string()), ((-20+2+3+4+5+6+7+8+9)*2)+20); // ['', ],
-    assert_eq!(calc_round_score("dd23456789".to_string()), ((-20+2+3+4+5+6+7+8+9)*3)+20); // ['', ],
-    assert_eq!(calc_round_score("ddd23456789".to_string()), ((-20+2+3+4+5+6+7+8+9)*4)+20); // ['', ],
-    assert_eq!(calc_round_score("ddd2345678".to_string()), ((-20+2+3+4+5+6+7+8)*4)+20); // ['', ],
-    assert_eq!(calc_round_score("ddd23456".to_string()), ((-20+2+3+4+5+6)*4)+20); // ['', ],
-    assert_eq!(calc_round_score("ddd2345".to_string()), ((-20+2+3+4+5)*4)); // ['', ],
+    assert_eq!(calc_round_score("23".to_string()), -20 + 2 + 3); // ['', ],
+    assert_eq!(calc_round_score("234".to_string()), -20 + 2 + 3 + 4); // ['', ],
+    assert_eq!(
+        calc_round_score("23456789".to_string()),
+        -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 20
+    ); // ['', ],
+    assert_eq!(
+        calc_round_score("2345678".to_string()),
+        -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8
+    ); // ['', ],
+    assert_eq!(
+        calc_round_score("d23456789".to_string()),
+        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 2) + 20
+    ); // ['', ],
+    assert_eq!(
+        calc_round_score("dd23456789".to_string()),
+        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 3) + 20
+    ); // ['', ],
+    assert_eq!(
+        calc_round_score("ddd23456789".to_string()),
+        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 4) + 20
+    ); // ['', ],
+    assert_eq!(
+        calc_round_score("ddd2345678".to_string()),
+        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8) * 4) + 20
+    ); // ['', ],
+    assert_eq!(
+        calc_round_score("ddd23456".to_string()),
+        ((-20 + 2 + 3 + 4 + 5 + 6) * 4) + 20
+    ); // ['', ],
+    assert_eq!(
+        calc_round_score("ddd2345".to_string()),
+        ((-20 + 2 + 3 + 4 + 5) * 4)
+    ); // ['', ],
 }
