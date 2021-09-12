@@ -65,7 +65,11 @@ fn calc_round_score(cards_text: String) -> i16 {
         };
     };
     
-    (score - 20) * (doubler as i16 + 1)
+    score = (score - 20) * (doubler as i16 + 1);
+    if cards_text.len() == 8 {
+        score += 8;
+    };
+    score
 }
 
 
