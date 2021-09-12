@@ -13,9 +13,18 @@ game:
 
 use std::io;
 
+struct Player {
+    score: i16,
+}
+
+impl Player {
+    fn new() -> Self {
+        Player{ score: 0 }
+    }
+}
+
 fn main() {
-    let player_1_score = 0_i16;
-    let player_2_score = 0_i16;
+    let players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 1..=3 {
         for user in 1..=2 {
@@ -25,6 +34,6 @@ fn main() {
         }
     }
 
-    println!("player 1 score: {}", player_1_score);
-    println!("player 2 score: {}", player_2_score);
+    println!("player 1 score: {}", players[0].score);
+    println!("player 2 score: {}", players[1].score);
 }
