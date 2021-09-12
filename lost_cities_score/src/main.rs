@@ -11,10 +11,14 @@ game:
         player 2: "d2 d3 d4 678 t"
 */
 
-// use std::io;
+use std::io;
 
 struct Player {
     score: i16,
+}
+
+enum Error {
+    CardError(char),
 }
 
 impl Player {
@@ -33,20 +37,27 @@ fn main() {
                 round + 1,
                 player_number + 1
             );
-            let line = String::from("ddd23456789t");
-            let line = String::from("5");
-            let line = String::from("23456789");
-            // let mut line = String::new();
-            // let result = io::stdin().read_line(&mut line);
-            // match result {
-            //     Ok(_) => {},
-            //     Err(err) => {
-            //         println!("Could not read player input!");
-            //         println!("Error: {}", err);
-            //         return
-            //     }
-            // }
-            players[player_number].score += calc_round_score(line);
+            // let line = String::from("ddd23456789t");
+            // let line = String::from("5");
+            // let line = String::from("23456789");
+            let mut line = String::new();
+            let result = io::stdin().read_line(&mut line);
+            match result {
+                Ok(_) => {},
+                Err(err) => {
+                    println!("Could not read player input!");
+                    println!("Error: {}", err);
+                    return
+                }
+            }
+            let current_score = match calc_round_score(line) {
+                Ok(score) => score,
+                Err(Error::CardError(card)) => {
+                    println!("Bad card: \"{}\"! Cards can be d, t, 2-9", card);
+                    return
+                }
+            };
+            players[player_number].score += current_score;
         }
     }
 
@@ -55,7 +66,7 @@ fn main() {
     }
 }
 
-fn calc_round_score(cards_text: String) -> i16 {
+fn calc_round_score(cards_text: String) -> Result<i16, Error> {
     let mut score = 0_i16;
     let mut doubler = 0_u8;
 
@@ -66,7 +77,7 @@ fn calc_round_score(cards_text: String) -> i16 {
                 score += card.to_digit(10).unwrap() as i16
             }
             't' | '1' => score += 10,
-            _ => panic!("Bad card char: {}", card),
+            _ => { return Result::Err(Error::CardError(card)) },
         };
     }
 
@@ -76,7 +87,7 @@ fn calc_round_score(cards_text: String) -> i16 {
         score += 20;
     };
 
-    score
+    Result::Ok(score)
 }
 
 #[test]
