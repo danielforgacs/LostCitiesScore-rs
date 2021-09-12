@@ -31,6 +31,7 @@ fn main() {
             println!("round {}, player {} enter cards:", round+1, player_number+1);
             let line = String::from("ddd23456789t");
             let line = String::from("5");
+            let line = String::from("23456789");
             // let mut line = String::new();
             // let result = io::stdin().read_line(&mut line);
             // match result {
@@ -55,6 +56,8 @@ fn calc_round_score(cards_text: String) -> i16 {
     let mut score = 0_i16;
     let mut doubler = 0_u8;
 
+    println!("cards in: {}", cards_text);
+
     for card in cards_text.trim().chars() {
         // println!("c {}", card.to_digit(10).unwrap() as i16);
         match card {
@@ -64,11 +67,14 @@ fn calc_round_score(cards_text: String) -> i16 {
             _ => panic!("Bad card char: {}", card),
         };
     };
-    
+
+    println!("score raw: {}", score);
     score = (score - 20) * (doubler as i16 + 1);
-    if cards_text.len() == 8 {
+    println!("score raw 2: {}", score);
+    if cards_text.len() >= 8 {
         score += 8;
     };
+    println!("score updated: {}", score);
     score
 }
 
@@ -81,8 +87,11 @@ fn test_calc_round_score() {
     assert_eq!(calc_round_score("d".to_string()), -40);
     assert_eq!(calc_round_score("dd".to_string()), -60);
     assert_eq!(calc_round_score("ddd".to_string()), -80);
-    // assert_eq!(calc_round_score("ddd".to_string()), -20 * 4);
-    // assert_eq!(calc_round_score("t".to_string()), -10);
+    assert_eq!(calc_round_score("2345678".to_string()), 2+3+4+5+6+7+8-20);
+    assert_eq!(calc_round_score("23456789".to_string()), 44-20+8);
+    assert_eq!(calc_round_score("23456789t".to_string()), 2+3+4+5+6+7+8+9+10-20+8);
 
-    // assert_eq!(calc_round_score("37t".to_string()), 0);
+
+    
+    
 }
