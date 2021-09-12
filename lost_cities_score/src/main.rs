@@ -78,7 +78,7 @@ fn calc_round_score(cards_text: String) -> i16 {
     score = (score - 20) * (doubler as i16 + 1);
     println!("score raw 2: {}", score);
     if cards_text.len() >= 8 {
-        score += 8;
+        score += 20;
     };
     println!("score updated: {}", score);
     score
@@ -96,10 +96,10 @@ fn test_calc_round_score() {
         calc_round_score("2345678".to_string()),
         2 + 3 + 4 + 5 + 6 + 7 + 8 - 20
     );
-    assert_eq!(calc_round_score("23456789".to_string()), 44 - 20 + 8);
+    assert_eq!(calc_round_score("23456789".to_string()), 44 - 20 + 20);
     assert_eq!(
         calc_round_score("23456789t".to_string()),
-        2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 - 20 + 8
+        2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 - 20 + 20
     );
 
 
@@ -112,8 +112,7 @@ fn test_calc_round_score() {
     assert_eq!(calc_round_score("2".to_string()), -18); // ['', ],
     assert_eq!(calc_round_score("23".to_string()), -20+2+3); // ['', ],
     assert_eq!(calc_round_score("234".to_string()), -20+2+3+4); // ['', ],
-    // assert_eq!(calc_round_score("23456789".to_string()), -20+2+3+4+5+6+7+8+9 +20); // ['', ],
-    // assert_eq!(calc_round_score("23456789".to_string()), 24+20); // ['', ],
+    assert_eq!(calc_round_score("23456789".to_string()), -20+2+3+4+5+6+7+8+9 +20); // ['', ],
     assert_eq!(calc_round_score("2345678".to_string()), -20+2+3+4+5+6+7+8); // ['', ],
     // assert_eq!(calc_round_score("23456789".to_string()), -20+2+3+4+5+6+7+8+9+20); // ['', ],
     // assert_eq!(calc_round_score("23456789".to_string()), (-20+2+3+4+5+6+7+8+9)+20); // ['', ],
