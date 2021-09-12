@@ -101,10 +101,6 @@ fn test_calc_round_score() {
         calc_round_score("23456789t".to_string()),
         2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 - 20 + 20
     );
-
-
-
-
     assert_eq!(calc_round_score("7891".to_string()), 14); // ['', ],
     assert_eq!(calc_round_score("d7891".to_string()), 14*2); // ['', ],
     assert_eq!(calc_round_score("dd7891".to_string()), 14*3); // ['', ],
@@ -114,15 +110,10 @@ fn test_calc_round_score() {
     assert_eq!(calc_round_score("234".to_string()), -20+2+3+4); // ['', ],
     assert_eq!(calc_round_score("23456789".to_string()), -20+2+3+4+5+6+7+8+9 +20); // ['', ],
     assert_eq!(calc_round_score("2345678".to_string()), -20+2+3+4+5+6+7+8); // ['', ],
-    // assert_eq!(calc_round_score("23456789".to_string()), -20+2+3+4+5+6+7+8+9+20); // ['', ],
-    // assert_eq!(calc_round_score("23456789".to_string()), (-20+2+3+4+5+6+7+8+9)+20); // ['', ],
-    // assert_eq!(calc_round_score("d23456789".to_string()), ((-20+2+3+4+5+6+7+8+9)*2)+20); // ['', ],
-    // assert_eq!(calc_round_score("dd23456789".to_string()), ((-20+2+3+4+5+6+7+8+9)*3)+20); // ['', ],
-    // assert_eq!(calc_round_score("ddd23456789".to_string()), ((-20+2+3+4+5+6+7+8+9)*4)+20); // ['', ],
-    // assert_eq!(calc_round_score("ddd2345678".to_string()), ((-20+2+3+4+5+6+7+8)*4)+20); // ['', ],
-    // assert_eq!(calc_round_score("ddd23456".to_string()), ((-20+2+3+4+5+6)*4)+20); // ['', ],
+    assert_eq!(calc_round_score("d23456789".to_string()), ((-20+2+3+4+5+6+7+8+9)*2)+20); // ['', ],
+    assert_eq!(calc_round_score("dd23456789".to_string()), ((-20+2+3+4+5+6+7+8+9)*3)+20); // ['', ],
+    assert_eq!(calc_round_score("ddd23456789".to_string()), ((-20+2+3+4+5+6+7+8+9)*4)+20); // ['', ],
+    assert_eq!(calc_round_score("ddd2345678".to_string()), ((-20+2+3+4+5+6+7+8)*4)+20); // ['', ],
+    assert_eq!(calc_round_score("ddd23456".to_string()), ((-20+2+3+4+5+6)*4)+20); // ['', ],
     assert_eq!(calc_round_score("ddd2345".to_string()), ((-20+2+3+4+5)*4)); // ['', ],
-
-
-
 }
