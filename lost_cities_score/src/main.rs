@@ -32,7 +32,7 @@ fn main() {
     println!("=== Lost Cities Scores Counter ===\n");
 
     let logname = loop {
-        let mut logname = "LostCitiesScores";
+        let logname = "LostCitiesScores";
         let now: DateTime<Utc> = Utc::now();
         let logname = format!("{}_{}.txt", logname, now.format("%Y-%m-%d_%H:%M:%S"));
         if !std::path::Path::new(&logname).exists() {
@@ -94,6 +94,15 @@ fn main() {
     for (index, player) in players.iter().enumerate() {
         println!("player {} score: {}", index + 1, player.score);
     }
+
+    let mut log = String::new();
+
+    for (index, player) in players.iter().enumerate() {
+        log += &format!("player {} score: {}\n", index + 1, player.score).as_str();
+    };
+
+    println!("{}", log);
+
 }
 
 fn calc_round_score(cards_text: String) -> Result<i16, Error> {
