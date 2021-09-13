@@ -32,37 +32,38 @@ fn main() {
 
     for round in 0..=2 {
         for player_number in 0..=1 {
-            println!(
-                "round {}, player {} enter cards:",
-                round + 1,
-                player_number + 1
-            );
+            // println!(
+            //     "round {}, player {} enter cards:",
+            //     round + 1,
+            //     player_number + 1
+            // );
             // let line = String::from("ddd23456789t");
             // let line = String::from("5");
             // let line = String::from("23456789");
-            let line = loop {
+            let current_score = loop {
+                println!("Enter round: {}, player {} cards (d23456789t):", round+1, player_number+1);
                 let mut line = String::new();
                 let result = io::stdin().read_line(&mut line);
                 match result {
-                    Ok(_) => {},
                     Err(err) => {
-                        println!("Could not read player input!");
-                        println!("Error: {}", err);
+                        println!("Could not read player input! Error: {}", err);
                         return
                     }
+                    _ => {},
                 }
-                if line != "\n" {
-                    break line
+                if line == "\n" {
+                    println!("Player must have a card!");
+                    continue
                 }
 
-                println!("Enter player cards: `d23456789t`.")
-            };
-            let current_score = match calc_round_score(line) {
-                Ok(score) => score,
-                Err(Error::CardError(card)) => {
-                    println!("Bad card: \"{}\"! Cards can be d, t, 2-9", card);
-                    return
-                }
+                match calc_round_score(line) {
+                    Ok(score) => {
+                        break score
+                    },
+                    Err(Error::CardError(card)) => {
+                        println!("Bad card: \"{}\"! Cards can be d, t, 2-9", card);
+                    }
+                };
             };
             players[player_number].score += current_score;
         }
