@@ -105,6 +105,8 @@ fn main() {
     println!("\n\nResults - [log:{}]:", logname);
     println!("{}", log);
 
+    std::fs::write(logname, log);
+
 }
 
 fn calc_round_score(cards_text: &String) -> Result<i16, Error> {
