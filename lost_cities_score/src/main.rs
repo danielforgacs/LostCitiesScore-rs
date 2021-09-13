@@ -11,8 +11,9 @@ game:
         player 2: "d2 d3 d4 678 t"
 */
 
-use std::io;
+// use std::io;
 use chrono::{DateTime, Utc};
+use std::io::{self, Write};
 
 struct Player {
     score: i16,
@@ -52,11 +53,13 @@ fn main() {
     for round in 0..=2 {
         for player_number in 0..=1 {
             let current_score = loop {
-                println!(
-                    "--> Enter round: {}, player {} cards:",
+                print!(
+                    "--> Enter round: {}, player {} cards: ",
                     round + 1,
                     player_number + 1
                 );
+
+                io::stdout().flush().unwrap();
 
                 let mut line = String::new();
                 let stdin_result = io::stdin().read_line(&mut line);
@@ -99,6 +102,7 @@ fn main() {
         log += &format!("player {} score: {}\n", index + 1, player.score).as_str();
     };
 
+    println!("\n\nResults:");
     println!("{}", log);
 
 }
