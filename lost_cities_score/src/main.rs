@@ -40,6 +40,8 @@ fn main() {
             // let line = String::from("ddd23456789t");
             // let line = String::from("5");
             // let line = String::from("23456789");
+            println!("help: type 'quit' to finish the game.");
+
             let current_score = loop {
                 println!("Enter round: {}, player {} cards (d23456789t):", round+1, player_number+1);
                 let mut line = String::new();
@@ -55,6 +57,11 @@ fn main() {
                     println!("Player must have a card!");
                     continue
                 }
+
+                match line.as_str() {
+                    "quit\n" => return,
+                    _ => {},
+                };
 
                 match calc_round_score(line) {
                     Ok(score) => {
