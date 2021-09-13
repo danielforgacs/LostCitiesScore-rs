@@ -12,6 +12,7 @@ game:
 */
 
 use std::io;
+use chrono::{DateTime, Utc};
 
 struct Player {
     score: i16,
@@ -28,10 +29,22 @@ impl Player {
 }
 
 fn main() {
+    let logname = loop {
+        let mut logname = "LostCitiesScores";
+        let now: DateTime<Utc> = Utc::now();
+        let logname = format!("{}_{}.txt", logname, now.format("%Y-%m-%d_%H:%M:%S"));
+        // println!("{}", logname);
+        println!("{}", std::path::Path::new(&logname).exists());
+        if !std::path::Path::new(&logname).exists() {
+            break logname;
+        };
+    };
+
     println!(
         "help: type 'quit' to finish the game. \
-    \ncards can be: d=double, t=10, 2-9"
+        \ncards can be: d=double, t=10, 2-9\n"
     );
+    println!("game log name: {}\n", logname);
 
     let mut players: [Player; 2] = [Player::new(), Player::new()];
 
