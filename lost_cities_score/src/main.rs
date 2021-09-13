@@ -55,7 +55,7 @@ fn main() {
                     break line
                 }
 
-                println!("Enter player cards...")
+                println!("Enter player cards: `d23456789t`.")
             };
             let current_score = match calc_round_score(line) {
                 Ok(score) => score,
