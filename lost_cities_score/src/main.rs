@@ -29,12 +29,12 @@ impl Player {
 }
 
 fn main() {
+    println!("=== Lost Cities Scores Counter ===\n");
+
     let logname = loop {
         let mut logname = "LostCitiesScores";
         let now: DateTime<Utc> = Utc::now();
         let logname = format!("{}_{}.txt", logname, now.format("%Y-%m-%d_%H:%M:%S"));
-        // println!("{}", logname);
-        println!("{}", std::path::Path::new(&logname).exists());
         if !std::path::Path::new(&logname).exists() {
             break logname;
         };
