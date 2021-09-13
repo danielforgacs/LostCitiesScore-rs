@@ -96,16 +96,20 @@ fn main() {
 
                 for colour in line.split(' ') {
                     let colour = colour.trim();
-                    println!("colour line: '{}'", colour);
+
                     match calc_round_score(&colour.to_string()) {
                         Ok(score) => round_score += score,
                         Err(Error::CardError(card)) => {
                             println!("Bad card: \"{}\"!", card);
+                            round_score = -888;
+                            break
                         }
                     };
                 };
 
-                break round_score
+                if round_score != -888 {
+                    break round_score
+                }
             };
 
             players[player_number].score += current_score;
