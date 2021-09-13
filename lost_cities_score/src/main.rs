@@ -35,19 +35,12 @@ fn main() {
 
     for round in 0..=2 {
         for player_number in 0..=1 {
-            // println!(
-            //     "round {}, player {} enter cards:",
-            //     round + 1,
-            //     player_number + 1
-            // );
-            // let line = String::from("ddd23456789t");
-            // let line = String::from("5");
-            // let line = String::from("23456789");
-
             let current_score = loop {
-                println!("Enter round: {}, player {} cards:", round+1, player_number+1);
+                println!("--> Enter round: {}, player {} cards:", round+1, player_number+1);
+
                 let mut line = String::new();
                 let result = io::stdin().read_line(&mut line);
+
                 match result {
                     Err(err) => {
                         println!("Could not read player input! Error: {}", err);
