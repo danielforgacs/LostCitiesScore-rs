@@ -53,13 +53,13 @@ fn main() {
                     }
                     _ => {},
                 }
-                if line == "\n" {
-                    println!("Player must have a card!");
-                    continue
-                }
 
                 match line.as_str() {
                     "quit\n" => return,
+                    "\n" => {
+                        println!("Player must have a card!");
+                        continue
+                    }
                     _ => {},
                 };
 
