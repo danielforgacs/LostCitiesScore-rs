@@ -40,16 +40,23 @@ fn main() {
             // let line = String::from("ddd23456789t");
             // let line = String::from("5");
             // let line = String::from("23456789");
-            let mut line = String::new();
-            let result = io::stdin().read_line(&mut line);
-            match result {
-                Ok(_) => {},
-                Err(err) => {
-                    println!("Could not read player input!");
-                    println!("Error: {}", err);
-                    return
+            let line = loop {
+                let mut line = String::new();
+                let result = io::stdin().read_line(&mut line);
+                match result {
+                    Ok(_) => {},
+                    Err(err) => {
+                        println!("Could not read player input!");
+                        println!("Error: {}", err);
+                        return
+                    }
                 }
-            }
+                if line != "\n" {
+                    break line
+                }
+
+                println!("Enter player cards...")
+            };
             let current_score = match calc_round_score(line) {
                 Ok(score) => score,
                 Err(Error::CardError(card)) => {
