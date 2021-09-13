@@ -92,13 +92,22 @@ fn main() {
                 );
                 log += &logline.as_str();
 
-                match calc_round_score(&line) {
-                    Ok(score) => break score,
-                    Err(Error::CardError(card)) => {
-                        println!("Bad card: \"{}\"!", card);
-                    }
+                let mut round_score = 0;
+
+                for colour in line.split(' ') {
+                    let colour = colour.trim();
+                    println!("colour line: '{}'", colour);
+                    match calc_round_score(&colour.to_string()) {
+                        Ok(score) => round_score += score,
+                        Err(Error::CardError(card)) => {
+                            println!("Bad card: \"{}\"!", card);
+                        }
+                    };
                 };
+
+                break round_score
             };
+
             players[player_number].score += current_score;
         }
     }
