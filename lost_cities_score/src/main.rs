@@ -28,15 +28,21 @@ impl Player {
 }
 
 fn main() {
-    println!("help: type 'quit' to finish the game. \
-    \ncards can be: d=double, t=10, 2-9");
+    println!(
+        "help: type 'quit' to finish the game. \
+    \ncards can be: d=double, t=10, 2-9"
+    );
 
     let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 0..=2 {
         for player_number in 0..=1 {
             let current_score = loop {
-                println!("--> Enter round: {}, player {} cards:", round+1, player_number+1);
+                println!(
+                    "--> Enter round: {}, player {} cards:",
+                    round + 1,
+                    player_number + 1
+                );
 
                 let mut line = String::new();
                 let stdin_result = io::stdin().read_line(&mut line);
@@ -44,27 +50,25 @@ fn main() {
                 match stdin_result {
                     Err(err) => {
                         println!("Could not read player input! Error: {}", err);
-                        return
+                        return;
                     }
-                    _ => {},
+                    _ => {}
                 }
 
                 match line.as_str() {
                     "quit\n" => {
                         println!("Bye!");
-                        return
-                    },
+                        return;
+                    }
                     "\n" => {
                         println!("Player must have a card!");
-                        continue
+                        continue;
                     }
-                    _ => {},
+                    _ => {}
                 };
 
                 match calc_round_score(line) {
-                    Ok(score) => {
-                        break score
-                    },
+                    Ok(score) => break score,
                     Err(Error::CardError(card)) => {
                         println!("Bad card: \"{}\"!", card);
                     }
@@ -90,7 +94,7 @@ fn calc_round_score(cards_text: String) -> Result<i16, Error> {
                 score += card.to_digit(10).unwrap() as i16
             }
             't' | '1' => score += 10,
-            _ => { return Result::Err(Error::CardError(card)) },
+            _ => return Result::Err(Error::CardError(card)),
         };
     }
 
@@ -105,100 +109,172 @@ fn calc_round_score(cards_text: String) -> Result<i16, Error> {
 
 #[test]
 fn test_calc_round_score() {
-    assert_eq!(match calc_round_score("5".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, -15);
-    assert_eq!(match calc_round_score("d5".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, -30);
-    assert_eq!(match calc_round_score("dd5".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, -45);
-    assert_eq!(match calc_round_score("d".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, -40);
-    assert_eq!(match calc_round_score("dd".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, -60);
-    assert_eq!(match calc_round_score("ddd".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, -80);
-    assert_eq!(match calc_round_score("2345678".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, 2 + 3 + 4 + 5 + 6 + 7 + 8 - 20);
-    assert_eq!(match calc_round_score("23456789".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, 44 - 20 + 20);
-    assert_eq!(match calc_round_score("23456789t".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 - 20 + 20);
-    assert_eq!(match calc_round_score("7891".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, 14);
-    assert_eq!(match calc_round_score("d7891".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, 14 * 2);
-    assert_eq!(match calc_round_score("dd7891".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, 14 * 3);
-    assert_eq!(match calc_round_score("dd789t".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, 14 * 3);
-    assert_eq!(match calc_round_score("2".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, -18);
-    assert_eq!(match calc_round_score("23".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, -20 + 2 + 3);
-    assert_eq!(match calc_round_score("234".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, -20 + 2 + 3 + 4);
-    assert_eq!(match calc_round_score("23456789".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 20);
-    assert_eq!(match calc_round_score("2345678".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8);
-    assert_eq!(match calc_round_score("d23456789".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 2) + 20);
-    assert_eq!(match calc_round_score("dd23456789".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 3) + 20);
-    assert_eq!(match calc_round_score("ddd23456789".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 4) + 20);
-    assert_eq!(match calc_round_score("ddd2345678".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8) * 4) + 20);
-    assert_eq!(match calc_round_score("ddd23456".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, ((-20 + 2 + 3 + 4 + 5 + 6) * 4) + 20);
-    assert_eq!(match calc_round_score("ddd2345".to_string()) {
-        Ok(k) => k,
-        Err(_) => -999,
-    }, ((-20 + 2 + 3 + 4 + 5) * 4));
+    assert_eq!(
+        match calc_round_score("5".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        -15
+    );
+    assert_eq!(
+        match calc_round_score("d5".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        -30
+    );
+    assert_eq!(
+        match calc_round_score("dd5".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        -45
+    );
+    assert_eq!(
+        match calc_round_score("d".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        -40
+    );
+    assert_eq!(
+        match calc_round_score("dd".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        -60
+    );
+    assert_eq!(
+        match calc_round_score("ddd".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        -80
+    );
+    assert_eq!(
+        match calc_round_score("2345678".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        2 + 3 + 4 + 5 + 6 + 7 + 8 - 20
+    );
+    assert_eq!(
+        match calc_round_score("23456789".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        44 - 20 + 20
+    );
+    assert_eq!(
+        match calc_round_score("23456789t".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 - 20 + 20
+    );
+    assert_eq!(
+        match calc_round_score("7891".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        14
+    );
+    assert_eq!(
+        match calc_round_score("d7891".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        14 * 2
+    );
+    assert_eq!(
+        match calc_round_score("dd7891".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        14 * 3
+    );
+    assert_eq!(
+        match calc_round_score("dd789t".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        14 * 3
+    );
+    assert_eq!(
+        match calc_round_score("2".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        -18
+    );
+    assert_eq!(
+        match calc_round_score("23".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        -20 + 2 + 3
+    );
+    assert_eq!(
+        match calc_round_score("234".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        -20 + 2 + 3 + 4
+    );
+    assert_eq!(
+        match calc_round_score("23456789".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 20
+    );
+    assert_eq!(
+        match calc_round_score("2345678".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8
+    );
+    assert_eq!(
+        match calc_round_score("d23456789".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 2) + 20
+    );
+    assert_eq!(
+        match calc_round_score("dd23456789".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 3) + 20
+    );
+    assert_eq!(
+        match calc_round_score("ddd23456789".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 4) + 20
+    );
+    assert_eq!(
+        match calc_round_score("ddd2345678".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8) * 4) + 20
+    );
+    assert_eq!(
+        match calc_round_score("ddd23456".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        ((-20 + 2 + 3 + 4 + 5 + 6) * 4) + 20
+    );
+    assert_eq!(
+        match calc_round_score("ddd2345".to_string()) {
+            Ok(k) => k,
+            Err(_) => -999,
+        },
+        ((-20 + 2 + 3 + 4 + 5) * 4)
+    );
 }
