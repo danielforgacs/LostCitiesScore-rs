@@ -105,7 +105,12 @@ fn main() {
     println!("\n\nResults - [log:{}]:", logname);
     println!("{}", log);
 
-    std::fs::write(logname, log);
+    match std::fs::write(logname, log) {
+        Ok(_) => {},
+        Err(_) => {
+            println!("Could not save log file sof some reason.");
+        }
+    };
 
 }
 
