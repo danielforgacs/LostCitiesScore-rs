@@ -84,7 +84,12 @@ fn main() {
                     _ => {}
                 };
 
-                let logline = format!("round: {}, player {} cards: {}", round + 1, player_number + 1, line);
+                let logline = format!(
+                    "round: {}, player {} cards: {}",
+                    round + 1,
+                    player_number + 1,
+                    line
+                );
                 log += &logline.as_str();
 
                 match calc_round_score(&line) {
@@ -100,18 +105,17 @@ fn main() {
 
     for (index, player) in players.iter().enumerate() {
         log += &format!("player {} score: {}\n", index + 1, player.score).as_str();
-    };
+    }
 
     println!("\n\nResults - [log:{}]:", logname);
     println!("{}", log);
 
     match std::fs::write(logname, log) {
-        Ok(_) => {},
+        Ok(_) => {}
         Err(_) => {
             println!("Could not save log file sof some reason.");
         }
     };
-
 }
 
 fn calc_round_score(cards_text: &String) -> Result<i16, Error> {
