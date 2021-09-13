@@ -28,6 +28,9 @@ impl Player {
 }
 
 fn main() {
+    println!("help: type 'quit' to finish the game. \
+    \ncards can be: d=double, t=10, 2-9");
+
     let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 0..=2 {
@@ -40,10 +43,9 @@ fn main() {
             // let line = String::from("ddd23456789t");
             // let line = String::from("5");
             // let line = String::from("23456789");
-            println!("help: type 'quit' to finish the game.");
 
             let current_score = loop {
-                println!("Enter round: {}, player {} cards (d23456789t):", round+1, player_number+1);
+                println!("Enter round: {}, player {} cards:", round+1, player_number+1);
                 let mut line = String::new();
                 let result = io::stdin().read_line(&mut line);
                 match result {
@@ -55,7 +57,10 @@ fn main() {
                 }
 
                 match line.as_str() {
-                    "quit\n" => return,
+                    "quit\n" => {
+                        println!("Bye!");
+                        return
+                    },
                     "\n" => {
                         println!("Player must have a card!");
                         continue
@@ -68,7 +73,7 @@ fn main() {
                         break score
                     },
                     Err(Error::CardError(card)) => {
-                        println!("Bad card: \"{}\"! Cards can be d, t, 2-9", card);
+                        println!("Bad card: \"{}\"!", card);
                     }
                 };
             };
