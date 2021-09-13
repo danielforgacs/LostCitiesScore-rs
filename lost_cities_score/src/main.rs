@@ -46,6 +46,7 @@ fn main() {
     );
     println!("game log name: {}\n", logname);
 
+    let mut log = String::new();
     let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 0..=2 {
@@ -80,7 +81,10 @@ fn main() {
                     _ => {}
                 };
 
-                match calc_round_score(line) {
+                let logline = format!("round: {}, player {} cards: {}", round + 1, player_number + 1, line);
+                log += &logline.as_str();
+
+                match calc_round_score(&line) {
                     Ok(score) => break score,
                     Err(Error::CardError(card)) => {
                         println!("Bad card: \"{}\"!", card);
@@ -92,12 +96,6 @@ fn main() {
     }
 
     for (index, player) in players.iter().enumerate() {
-        println!("player {} score: {}", index + 1, player.score);
-    }
-
-    let mut log = String::new();
-
-    for (index, player) in players.iter().enumerate() {
         log += &format!("player {} score: {}\n", index + 1, player.score).as_str();
     };
 
@@ -105,7 +103,7 @@ fn main() {
 
 }
 
-fn calc_round_score(cards_text: String) -> Result<i16, Error> {
+fn calc_round_score(cards_text: &String) -> Result<i16, Error> {
     let mut score = 0_i16;
     let mut doubler = 0_u8;
 
