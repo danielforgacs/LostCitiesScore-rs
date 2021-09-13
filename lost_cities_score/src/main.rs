@@ -39,9 +39,9 @@ fn main() {
                 println!("--> Enter round: {}, player {} cards:", round+1, player_number+1);
 
                 let mut line = String::new();
-                let result = io::stdin().read_line(&mut line);
+                let stdin_result = io::stdin().read_line(&mut line);
 
-                match result {
+                match stdin_result {
                     Err(err) => {
                         println!("Could not read player input! Error: {}", err);
                         return
