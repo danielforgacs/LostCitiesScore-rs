@@ -102,7 +102,7 @@ fn main() {
         log += &format!("player {} score: {}\n", index + 1, player.score).as_str();
     };
 
-    println!("\n\nResults:");
+    println!("\n\nResults - [log:{}]:", logname);
     println!("{}", log);
 
 }
