@@ -32,14 +32,16 @@ impl Player {
 fn main() {
     println!("=== Lost Cities Scores Counter ===\n");
 
-    let logname = loop {
-        let logname = "LostCitiesScores";
-        let now: DateTime<Utc> = Utc::now();
-        let logname = format!("{}_{}.txt", logname, now.format("%Y-%m-%d_%H:%M:%S"));
-        if !std::path::Path::new(&logname).exists() {
-            break logname;
-        };
-    };
+    // let logname = loop {
+    //     let logname = "LostCitiesScores";
+    //     let now: DateTime<Utc> = Utc::now();
+    //     let logname = format!("{}_{}.txt", logname, now.format("%Y-%m-%d_%H:%M:%S"));
+    //     if !std::path::Path::new(&logname).exists() {
+    //         break logname;
+    //     };
+    // };
+
+    let logname = create_game_log_name();
 
     println!(
         "help: type 'quit' to finish the game. \
@@ -128,6 +130,18 @@ fn main() {
         Err(_) => {
             println!("Could not save log file sof some reason.");
         }
+    };
+}
+
+fn create_game_log_name() -> String {
+    loop {
+        let logname = "LostCitiesScores";
+        let now: DateTime<Utc> = Utc::now();
+        let logname = format!("{}_{}.txt", logname, now.format("%Y-%m-%d_%H:%M:%S"));
+
+        if !std::path::Path::new(&logname).exists() {
+            return logname;
+        };
     };
 }
 
