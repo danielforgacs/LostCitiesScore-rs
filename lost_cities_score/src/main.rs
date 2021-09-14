@@ -87,11 +87,14 @@ fn main() {
 
                 log += &logline.as_str();
 
-                let round_score_2 = calc_player_round_score(&line);
+                match calc_player_round_score(&line) {
+                    Ok(score) => break score,
+                    Err(_err) => continue,
+                };
 
-                if round_score_2 != -888 {
-                    break round_score_2;
-                }
+                // if round_score_2 != -888 {
+                //     break round_score_2;
+                // }
             };
 
             players[player_number].score += current_score;
@@ -113,7 +116,7 @@ fn main() {
     };
 }
 
-fn calc_player_round_score(line: &String) -> i16 {
+fn calc_player_round_score(line: &String) -> Result<i16, Error> {
     let mut round_score = 0;
 
     for colour in line.split(' ') {
@@ -129,7 +132,7 @@ fn calc_player_round_score(line: &String) -> i16 {
         };
     }
 
-    round_score
+    Result::Ok(round_score)
 }
 
 fn create_game_log_name() -> String {
