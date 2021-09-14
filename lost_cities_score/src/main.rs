@@ -34,12 +34,7 @@ fn main() {
     for round in 0..=2 {
         for player_number in 0..=1 {
             players[player_number].score = loop {
-                print!(
-                    "--> Enter round: {}, player {} cards: ",
-                    round + 1,
-                    player_number + 1
-                );
-
+                print!("--> Enter round: {}, player {} cards: ", round + 1, player_number + 1);
                 io::stdout().flush().unwrap();
 
                 let mut line = String::new();
@@ -49,20 +44,20 @@ fn main() {
                     Err(err) => {
                         println!("Could not read player input! Error: {}", err);
                         return;
-                    }
-                    _ => {}
+                    },
+                    _ => {},
                 }
 
                 match line.as_str() {
                     "quit\n" => {
                         println!("Bye!");
                         return;
-                    }
+                    },
                     "\n" => {
                         println!("Player must have a card!");
                         continue;
-                    }
-                    _ => {}
+                    },
+                    _ => {},
                 };
 
                 let logline = format!(
