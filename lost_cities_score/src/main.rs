@@ -1,6 +1,9 @@
 use chrono::{DateTime, Utc};
 use std::io::{self, Write};
 
+const GAME_LOG_FILE_NAME: &str = "LostCitiesScores";
+const GAME_LOG_DATE_TEMPLATE: &str = "%Y-%m-%d_%H-%M-%S";
+
 struct Player {
     score: i16,
 }
@@ -37,8 +40,8 @@ fn main() {
                 print!("--> Enter round: {}, player {} cards: ", round + 1, player_number + 1);
                 io::stdout().flush().unwrap();
 
-                let mut line = String::new();
-                let stdin_result = io::stdin().read_line(&mut line);
+                let mut user_input = String::new();
+                let stdin_result = io::stdin().read_line(&mut user_input);
 
                 match stdin_result {
                     Err(err) => {
@@ -48,7 +51,7 @@ fn main() {
                     _ => {},
                 }
 
-                match line.as_str() {
+                match user_input.as_str() {
                     "quit\n" => {
                         println!("Bye!");
                         return;
@@ -61,9 +64,9 @@ fn main() {
                 };
 
                 
-                match calc_player_round_score(&line) {
+                match calc_player_round_score(&user_input) {
                     Ok(score) => {
-                        let logline = format!("round: {}, player {} cards: {}", round + 1, player_number + 1, line);
+                        let logline = format!("round: {}, player {} cards: {}", round + 1, player_number + 1, user_input);
                         log += &logline.as_str();
                         break score
                     },
@@ -103,9 +106,8 @@ fn calc_player_round_score(line: &String) -> Result<i16, Error> {
 
 fn create_game_log_name() -> String {
     loop {
-        let logname = "LostCitiesScores";
         let now: DateTime<Utc> = Utc::now();
-        let logname = format!("{}_{}.txt", logname, now.format("%Y-%m-%d_%H:%M:%S"));
+        let logname = format!("{}_{}.txt", GAME_LOG_FILE_NAME, now.format(GAME_LOG_DATE_TEMPLATE));
 
         if !std::path::Path::new(&logname).exists() {
             return logname;
@@ -137,172 +139,39 @@ fn calc_expedition_score(cards_text: &String) -> Result<i16, Error> {
 
 #[test]
 fn test_calc_expedition_score() {
-    assert_eq!(
-        match calc_expedition_score(&"5".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        -15
-    );
-    assert_eq!(
-        match calc_expedition_score(&"d5".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        -30
-    );
-    assert_eq!(
-        match calc_expedition_score(&"dd5".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        -45
-    );
-    assert_eq!(
-        match calc_expedition_score(&"d".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        -40
-    );
-    assert_eq!(
-        match calc_expedition_score(&"dd".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        -60
-    );
-    assert_eq!(
-        match calc_expedition_score(&"ddd".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        -80
-    );
-    assert_eq!(
-        match calc_expedition_score(&"2345678".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        2 + 3 + 4 + 5 + 6 + 7 + 8 - 20
-    );
-    assert_eq!(
-        match calc_expedition_score(&"23456789".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        44 - 20 + 20
-    );
-    assert_eq!(
-        match calc_expedition_score(&"23456789t".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 - 20 + 20
-    );
-    assert_eq!(
-        match calc_expedition_score(&"7891".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        14
-    );
-    assert_eq!(
-        match calc_expedition_score(&"d7891".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        14 * 2
-    );
-    assert_eq!(
-        match calc_expedition_score(&"dd7891".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        14 * 3
-    );
-    assert_eq!(
-        match calc_expedition_score(&"dd789t".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        14 * 3
-    );
-    assert_eq!(
-        match calc_expedition_score(&"2".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        -18
-    );
-    assert_eq!(
-        match calc_expedition_score(&"23".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        -20 + 2 + 3
-    );
-    assert_eq!(
-        match calc_expedition_score(&"234".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        -20 + 2 + 3 + 4
-    );
-    assert_eq!(
-        match calc_expedition_score(&"23456789".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 20
-    );
-    assert_eq!(
-        match calc_expedition_score(&"2345678".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8
-    );
-    assert_eq!(
-        match calc_expedition_score(&"d23456789".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 2) + 20
-    );
-    assert_eq!(
-        match calc_expedition_score(&"dd23456789".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 3) + 20
-    );
-    assert_eq!(
-        match calc_expedition_score(&"ddd23456789".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 4) + 20
-    );
-    assert_eq!(
-        match calc_expedition_score(&"ddd2345678".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8) * 4) + 20
-    );
-    assert_eq!(
-        match calc_expedition_score(&"ddd23456".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        ((-20 + 2 + 3 + 4 + 5 + 6) * 4) + 20
-    );
-    assert_eq!(
-        match calc_expedition_score(&"ddd2345".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        ((-20 + 2 + 3 + 4 + 5) * 4)
-    );
+    assert_eq!(calc_expedition_score(&"5".to_string()).unwrap(), -15);
+    assert_eq!(calc_expedition_score(&"d5".to_string()).unwrap(), -30);
+    assert_eq!(calc_expedition_score(&"dd5".to_string()).unwrap(), -45);
+    assert_eq!(calc_expedition_score(&"d".to_string()).unwrap(), -40);
+    assert_eq!(calc_expedition_score(&"dd".to_string()).unwrap(), -60);
+    assert_eq!(calc_expedition_score(&"ddd".to_string()).unwrap(), -80);
+    assert_eq!(calc_expedition_score(&"2345678".to_string()).unwrap(), 2 + 3 + 4 + 5 + 6 + 7 + 8 - 20);
+    assert_eq!(calc_expedition_score(&"23456789".to_string()).unwrap(), 44 - 20 + 20);
+    assert_eq!(calc_expedition_score(&"23456789t".to_string()).unwrap(), 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 - 20 + 20);
+    assert_eq!(calc_expedition_score(&"7891".to_string()).unwrap(), 14);
+    assert_eq!(calc_expedition_score(&"d7891".to_string()).unwrap(), 14 * 2);
+    assert_eq!(calc_expedition_score(&"dd7891".to_string()).unwrap(), 14 * 3);
+    assert_eq!(calc_expedition_score(&"dd789t".to_string()).unwrap(), 14 * 3);
+    assert_eq!(calc_expedition_score(&"2".to_string()).unwrap(), -18);
+    assert_eq!(calc_expedition_score(&"23".to_string()).unwrap(), -20 + 2 + 3);
+    assert_eq!(calc_expedition_score(&"234".to_string()).unwrap(), -20 + 2 + 3 + 4);
+    assert_eq!(calc_expedition_score(&"23456789".to_string()).unwrap(), -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 20);
+    assert_eq!(calc_expedition_score(&"2345678".to_string()).unwrap(), -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8);
+    assert_eq!(calc_expedition_score(&"d23456789".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 2) + 20);
+    assert_eq!(calc_expedition_score(&"dd23456789".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 3) + 20);
+    assert_eq!(calc_expedition_score(&"ddd23456789".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 4) + 20);
+    assert_eq!(calc_expedition_score(&"ddd2345678".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8) * 4) + 20);
+    assert_eq!(calc_expedition_score(&"ddd23456".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6) * 4) + 20);
+    assert_eq!(calc_expedition_score(&"ddd2345".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5) * 4));
+}
+
+#[test]
+fn test_calc_player_round_score() {
+    assert_eq!(calc_player_round_score(&"28t 28t".to_string()).unwrap(), 0);
+    assert_eq!(calc_player_round_score(&"d d d d d".to_string()).unwrap(), -200);
+    assert_eq!(calc_player_round_score(&"dd dd dd dd dd".to_string()).unwrap(), -300);
+    assert_eq!(calc_player_round_score(&"ddd d ddd d ddd".to_string()).unwrap(), -320);
+    assert_eq!(calc_player_round_score(&"2 d34 dd456 ddd5678 ddd23456789t".to_string()).unwrap(), 121);
+    assert_eq!(calc_player_round_score(&"ddd23456789t".to_string()).unwrap(), 156);
+    assert_eq!(calc_player_round_score(&"ddd23456789t ddd23456789t ddd23456789t ddd23456789t ddd23456789t".to_string()).unwrap(), 780);
 }
