@@ -89,7 +89,9 @@ fn main() {
 
                 match calc_player_round_score(&line) {
                     Ok(score) => break score,
-                    Err(_err) => {},
+                    Err(Error::CardError(card)) => {
+                        println!("Bad card: \"{:?}\"!", card);
+                    },
                 };
             };
         }
@@ -119,10 +121,7 @@ fn calc_player_round_score(line: &String) -> Result<i16, Error> {
         match calc_expedition_score(&colour.to_string()) {
             Ok(score) => round_score += score,
             Err(Error::CardError(card)) => {
-                println!("Bad card: \"{}\"!", card);
-                return Result::Err(Error::CardError(card))
-                // round_score = -888;
-                // break;
+                return Result::Err(Error::CardError(card));
             }
         };
     }
