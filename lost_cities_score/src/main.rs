@@ -30,24 +30,16 @@ impl Player {
 }
 
 fn main() {
-    println!("=== Lost Cities Scores Counter ===\n");
-
-    // let logname = loop {
-    //     let logname = "LostCitiesScores";
-    //     let now: DateTime<Utc> = Utc::now();
-    //     let logname = format!("{}_{}.txt", logname, now.format("%Y-%m-%d_%H:%M:%S"));
-    //     if !std::path::Path::new(&logname).exists() {
-    //         break logname;
-    //     };
-    // };
-
     let logname = create_game_log_name();
 
     println!(
-        "help: type 'quit' to finish the game. \
-        \ncards can be: d=double, t=10, 2-9\n"
+        "===== Lost Cities Scores Counter =====\n\
+        type 'quit' to finish the game. \
+        \ncards can be: d=double, t=10, 2-9\n\
+        game log name:\n{}\n\
+        ========================================\n",
+        logname
     );
-    println!("game log name: {}\n", logname);
 
     let mut log = String::new();
     let mut players: [Player; 2] = [Player::new(), Player::new()];
