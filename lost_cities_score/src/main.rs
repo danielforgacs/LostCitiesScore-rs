@@ -105,7 +105,7 @@ fn create_game_log_name() -> String {
     loop {
         let logname = "LostCitiesScores";
         let now: DateTime<Utc> = Utc::now();
-        let logname = format!("{}_{}.txt", logname, now.format("%Y-%m-%d_%H:%M:%S"));
+        let logname = format!("{}_{}.txt", logname, now.format("%Y-%m-%d_%H-%M-%S"));
 
         if !std::path::Path::new(&logname).exists() {
             return logname;
