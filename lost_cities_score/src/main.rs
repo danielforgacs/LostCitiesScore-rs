@@ -312,4 +312,8 @@ fn test_calc_expedition_score() {
 #[test]
 fn test_calc_player_round_score() {
     assert_eq!(calc_player_round_score(&"28t 28t".to_string()).unwrap(), 0);
+    assert_eq!(calc_player_round_score(&"d d d d d".to_string()).unwrap(), -200);
+    assert_eq!(calc_player_round_score(&"dd dd dd dd dd".to_string()).unwrap(), -300);
+    assert_eq!(calc_player_round_score(&"ddd d ddd d ddd".to_string()).unwrap(), -320);
+    assert_eq!(calc_player_round_score(&"2 d34 dd456 ddd5678 ddd23456789t".to_string()).unwrap(), 121);
 }
