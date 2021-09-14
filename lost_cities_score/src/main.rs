@@ -96,13 +96,13 @@ fn main() {
                         Err(Error::CardError(card)) => {
                             println!("Bad card: \"{}\"!", card);
                             round_score = -888;
-                            break
+                            break;
                         }
                     };
-                };
+                }
 
                 if round_score != -888 {
-                    break round_score
+                    break round_score;
                 }
             };
 
@@ -134,7 +134,7 @@ fn create_game_log_name() -> String {
         if !std::path::Path::new(&logname).exists() {
             return logname;
         };
-    };
+    }
 }
 
 fn calc_round_score(cards_text: &String) -> Result<i16, Error> {
