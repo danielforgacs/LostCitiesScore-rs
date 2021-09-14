@@ -60,11 +60,13 @@ fn main() {
                     _ => {},
                 };
 
-                let logline = format!("round: {}, player {} cards: {}", round + 1, player_number + 1, line);
-                log += &logline.as_str();
-
+                
                 match calc_player_round_score(&line) {
-                    Ok(score) => break score,
+                    Ok(score) => {
+                        let logline = format!("round: {}, player {} cards: {}", round + 1, player_number + 1, line);
+                        log += &logline.as_str();
+                        break score
+                    },
                     Err(Error::CardError(card)) => { println!("Bad card: \"{:?}\"!", card); },
                 };
             };
