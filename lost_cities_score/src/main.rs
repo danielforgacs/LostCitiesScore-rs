@@ -140,10 +140,7 @@ fn calc_expedition_score(cards_text: &String) -> Result<i16, Error> {
 #[test]
 fn test_calc_expedition_score() {
     assert_eq!(
-        match calc_expedition_score(&"5".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
+        calc_expedition_score(&"5".to_string()).unwrap(),
         -15
     );
     assert_eq!(
