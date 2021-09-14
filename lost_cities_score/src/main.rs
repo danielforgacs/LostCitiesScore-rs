@@ -46,7 +46,7 @@ fn main() {
 
     for round in 0..=2 {
         for player_number in 0..=1 {
-            let current_score = loop {
+            players[player_number].score = loop {
                 print!(
                     "--> Enter round: {}, player {} cards: ",
                     round + 1,
@@ -97,7 +97,7 @@ fn main() {
                 // }
             };
 
-            players[player_number].score += current_score;
+            // players[player_number].score += current_score;
         }
     }
 
