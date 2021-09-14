@@ -84,26 +84,13 @@ fn main() {
                     player_number + 1,
                     line
                 );
+
                 log += &logline.as_str();
 
                 let round_score_2 = calc_player_round_score(&line);
-                let mut round_score = 0;
 
-                for colour in line.split(' ') {
-                    let colour = colour.trim();
-
-                    match calc_expedition_score(&colour.to_string()) {
-                        Ok(score) => round_score += score,
-                        Err(Error::CardError(card)) => {
-                            println!("Bad card: \"{}\"!", card);
-                            round_score = -888;
-                            break;
-                        }
-                    };
-                }
-
-                if round_score != -888 {
-                    break round_score;
+                if round_score_2 != -888 {
+                    break round_score_2;
                 }
             };
 
@@ -127,7 +114,22 @@ fn main() {
 }
 
 fn calc_player_round_score(line: &String) -> i16 {
-    -1
+    let mut round_score = 0;
+
+    for colour in line.split(' ') {
+        let colour = colour.trim();
+
+        match calc_expedition_score(&colour.to_string()) {
+            Ok(score) => round_score += score,
+            Err(Error::CardError(card)) => {
+                println!("Bad card: \"{}\"!", card);
+                round_score = -888;
+                break;
+            }
+        };
+    }
+
+    round_score
 }
 
 fn create_game_log_name() -> String {
