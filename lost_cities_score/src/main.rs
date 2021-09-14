@@ -40,8 +40,8 @@ fn main() {
                 print!("--> Enter round: {}, player {} cards: ", round + 1, player_number + 1);
                 io::stdout().flush().unwrap();
 
-                let mut line = String::new();
-                let stdin_result = io::stdin().read_line(&mut line);
+                let mut user_input = String::new();
+                let stdin_result = io::stdin().read_line(&mut user_input);
 
                 match stdin_result {
                     Err(err) => {
@@ -51,7 +51,7 @@ fn main() {
                     _ => {},
                 }
 
-                match line.as_str() {
+                match user_input.as_str() {
                     "quit\n" => {
                         println!("Bye!");
                         return;
@@ -64,9 +64,9 @@ fn main() {
                 };
 
                 
-                match calc_player_round_score(&line) {
+                match calc_player_round_score(&user_input) {
                     Ok(score) => {
-                        let logline = format!("round: {}, player {} cards: {}", round + 1, player_number + 1, line);
+                        let logline = format!("round: {}, player {} cards: {}", round + 1, player_number + 1, user_input);
                         log += &logline.as_str();
                         break score
                     },
