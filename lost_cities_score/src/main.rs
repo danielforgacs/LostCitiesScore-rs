@@ -86,6 +86,7 @@ fn main() {
                 );
                 log += &logline.as_str();
 
+                let round_score_2 = calc_player_round_score(&line);
                 let mut round_score = 0;
 
                 for colour in line.split(' ') {
@@ -123,6 +124,10 @@ fn main() {
             println!("Could not save log file sof some reason.");
         }
     };
+}
+
+fn calc_player_round_score(line: &String) -> i16 {
+    -1
 }
 
 fn create_game_log_name() -> String {
