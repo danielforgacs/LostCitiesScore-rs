@@ -144,31 +144,19 @@ fn test_calc_expedition_score() {
         -15
     );
     assert_eq!(
-        match calc_expedition_score(&"d5".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
+        calc_expedition_score(&"d5".to_string()).unwrap(),
         -30
     );
     assert_eq!(
-        match calc_expedition_score(&"dd5".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
+        calc_expedition_score(&"dd5".to_string()).unwrap(),
         -45
     );
     assert_eq!(
-        match calc_expedition_score(&"d".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
+        calc_expedition_score(&"d".to_string()).unwrap(),
         -40
     );
     assert_eq!(
-        match calc_expedition_score(&"dd".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
+        calc_expedition_score(&"dd".to_string()).unwrap(),
         -60
     );
     assert_eq!(
