@@ -145,66 +145,39 @@ fn test_calc_expedition_score() {
     assert_eq!(calc_expedition_score(&"d".to_string()).unwrap(), -40);
     assert_eq!(calc_expedition_score(&"dd".to_string()).unwrap(), -60);
     assert_eq!(
-        match calc_expedition_score(&"ddd".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
+        calc_expedition_score(&"ddd".to_string()).unwrap(),
         -80
     );
     assert_eq!(
-        match calc_expedition_score(&"2345678".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
+        calc_expedition_score(&"2345678".to_string()).unwrap(),
         2 + 3 + 4 + 5 + 6 + 7 + 8 - 20
     );
     assert_eq!(
-        match calc_expedition_score(&"23456789".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
+        calc_expedition_score(&"23456789".to_string()).unwrap(),
         44 - 20 + 20
     );
     assert_eq!(
-        match calc_expedition_score(&"23456789t".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
+        calc_expedition_score(&"23456789t".to_string()).unwrap(),
         2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 - 20 + 20
     );
     assert_eq!(
-        match calc_expedition_score(&"7891".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
+        calc_expedition_score(&"7891".to_string()).unwrap(),
         14
     );
     assert_eq!(
-        match calc_expedition_score(&"d7891".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
+        calc_expedition_score(&"d7891".to_string()).unwrap(),
         14 * 2
     );
     assert_eq!(
-        match calc_expedition_score(&"dd7891".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
+        calc_expedition_score(&"dd7891".to_string()).unwrap(),
         14 * 3
     );
     assert_eq!(
-        match calc_expedition_score(&"dd789t".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
+        calc_expedition_score(&"dd789t".to_string()).unwrap(),
         14 * 3
     );
     assert_eq!(
-        match calc_expedition_score(&"2".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
+        calc_expedition_score(&"2".to_string()).unwrap(),
         -18
     );
     assert_eq!(
