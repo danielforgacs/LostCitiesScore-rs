@@ -91,13 +91,7 @@ fn main() {
                     Ok(score) => break score,
                     Err(_err) => {},
                 };
-
-                // if round_score_2 != -888 {
-                //     break round_score_2;
-                // }
             };
-
-            // players[player_number].score += current_score;
         }
     }
 
