@@ -308,3 +308,8 @@ fn test_calc_expedition_score() {
         ((-20 + 2 + 3 + 4 + 5) * 4)
     );
 }
+
+#[test]
+fn test_calc_player_round_score() {
+    assert_eq!(calc_player_round_score(&"28t 28t".to_string()).unwrap(), 0);
+}
