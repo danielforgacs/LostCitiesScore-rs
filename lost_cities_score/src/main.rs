@@ -91,7 +91,7 @@ fn main() {
                 for colour in line.split(' ') {
                     let colour = colour.trim();
 
-                    match calc_round_score(&colour.to_string()) {
+                    match calc_expedition_score(&colour.to_string()) {
                         Ok(score) => round_score += score,
                         Err(Error::CardError(card)) => {
                             println!("Bad card: \"{}\"!", card);
@@ -137,7 +137,7 @@ fn create_game_log_name() -> String {
     }
 }
 
-fn calc_round_score(cards_text: &String) -> Result<i16, Error> {
+fn calc_expedition_score(cards_text: &String) -> Result<i16, Error> {
     let mut score = 0_i16;
     let mut doubler = 0_u8;
 
@@ -162,170 +162,170 @@ fn calc_round_score(cards_text: &String) -> Result<i16, Error> {
 }
 
 #[test]
-fn test_calc_round_score() {
+fn test_calc_expedition_score() {
     assert_eq!(
-        match calc_round_score(&"5".to_string()) {
+        match calc_expedition_score(&"5".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         -15
     );
     assert_eq!(
-        match calc_round_score(&"d5".to_string()) {
+        match calc_expedition_score(&"d5".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         -30
     );
     assert_eq!(
-        match calc_round_score(&"dd5".to_string()) {
+        match calc_expedition_score(&"dd5".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         -45
     );
     assert_eq!(
-        match calc_round_score(&"d".to_string()) {
+        match calc_expedition_score(&"d".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         -40
     );
     assert_eq!(
-        match calc_round_score(&"dd".to_string()) {
+        match calc_expedition_score(&"dd".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         -60
     );
     assert_eq!(
-        match calc_round_score(&"ddd".to_string()) {
+        match calc_expedition_score(&"ddd".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         -80
     );
     assert_eq!(
-        match calc_round_score(&"2345678".to_string()) {
+        match calc_expedition_score(&"2345678".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         2 + 3 + 4 + 5 + 6 + 7 + 8 - 20
     );
     assert_eq!(
-        match calc_round_score(&"23456789".to_string()) {
+        match calc_expedition_score(&"23456789".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         44 - 20 + 20
     );
     assert_eq!(
-        match calc_round_score(&"23456789t".to_string()) {
+        match calc_expedition_score(&"23456789t".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 - 20 + 20
     );
     assert_eq!(
-        match calc_round_score(&"7891".to_string()) {
+        match calc_expedition_score(&"7891".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         14
     );
     assert_eq!(
-        match calc_round_score(&"d7891".to_string()) {
+        match calc_expedition_score(&"d7891".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         14 * 2
     );
     assert_eq!(
-        match calc_round_score(&"dd7891".to_string()) {
+        match calc_expedition_score(&"dd7891".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         14 * 3
     );
     assert_eq!(
-        match calc_round_score(&"dd789t".to_string()) {
+        match calc_expedition_score(&"dd789t".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         14 * 3
     );
     assert_eq!(
-        match calc_round_score(&"2".to_string()) {
+        match calc_expedition_score(&"2".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         -18
     );
     assert_eq!(
-        match calc_round_score(&"23".to_string()) {
+        match calc_expedition_score(&"23".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         -20 + 2 + 3
     );
     assert_eq!(
-        match calc_round_score(&"234".to_string()) {
+        match calc_expedition_score(&"234".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         -20 + 2 + 3 + 4
     );
     assert_eq!(
-        match calc_round_score(&"23456789".to_string()) {
+        match calc_expedition_score(&"23456789".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 20
     );
     assert_eq!(
-        match calc_round_score(&"2345678".to_string()) {
+        match calc_expedition_score(&"2345678".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8
     );
     assert_eq!(
-        match calc_round_score(&"d23456789".to_string()) {
+        match calc_expedition_score(&"d23456789".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 2) + 20
     );
     assert_eq!(
-        match calc_round_score(&"dd23456789".to_string()) {
+        match calc_expedition_score(&"dd23456789".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 3) + 20
     );
     assert_eq!(
-        match calc_round_score(&"ddd23456789".to_string()) {
+        match calc_expedition_score(&"ddd23456789".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 4) + 20
     );
     assert_eq!(
-        match calc_round_score(&"ddd2345678".to_string()) {
+        match calc_expedition_score(&"ddd2345678".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8) * 4) + 20
     );
     assert_eq!(
-        match calc_round_score(&"ddd23456".to_string()) {
+        match calc_expedition_score(&"ddd23456".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
         ((-20 + 2 + 3 + 4 + 5 + 6) * 4) + 20
     );
     assert_eq!(
-        match calc_round_score(&"ddd2345".to_string()) {
+        match calc_expedition_score(&"ddd2345".to_string()) {
             Ok(k) => k,
             Err(_) => -999,
         },
