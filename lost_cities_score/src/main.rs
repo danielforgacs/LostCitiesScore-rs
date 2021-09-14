@@ -139,26 +139,11 @@ fn calc_expedition_score(cards_text: &String) -> Result<i16, Error> {
 
 #[test]
 fn test_calc_expedition_score() {
-    assert_eq!(
-        calc_expedition_score(&"5".to_string()).unwrap(),
-        -15
-    );
-    assert_eq!(
-        calc_expedition_score(&"d5".to_string()).unwrap(),
-        -30
-    );
-    assert_eq!(
-        calc_expedition_score(&"dd5".to_string()).unwrap(),
-        -45
-    );
-    assert_eq!(
-        calc_expedition_score(&"d".to_string()).unwrap(),
-        -40
-    );
-    assert_eq!(
-        calc_expedition_score(&"dd".to_string()).unwrap(),
-        -60
-    );
+    assert_eq!(calc_expedition_score(&"5".to_string()).unwrap(), -15);
+    assert_eq!(calc_expedition_score(&"d5".to_string()).unwrap(), -30);
+    assert_eq!(calc_expedition_score(&"dd5".to_string()).unwrap(), -45);
+    assert_eq!(calc_expedition_score(&"d".to_string()).unwrap(), -40);
+    assert_eq!(calc_expedition_score(&"dd".to_string()).unwrap(), -60);
     assert_eq!(
         match calc_expedition_score(&"ddd".to_string()) {
             Ok(k) => k,
