@@ -60,20 +60,12 @@ fn main() {
                     _ => {},
                 };
 
-                let logline = format!(
-                    "round: {}, player {} cards: {}",
-                    round + 1,
-                    player_number + 1,
-                    line
-                );
-
+                let logline = format!("round: {}, player {} cards: {}", round + 1, player_number + 1, line);
                 log += &logline.as_str();
 
                 match calc_player_round_score(&line) {
                     Ok(score) => break score,
-                    Err(Error::CardError(card)) => {
-                        println!("Bad card: \"{:?}\"!", card);
-                    },
+                    Err(Error::CardError(card)) => { println!("Bad card: \"{:?}\"!", card); },
                 };
             };
         }
@@ -88,9 +80,7 @@ fn main() {
 
     match std::fs::write(logname, log) {
         Ok(_) => {}
-        Err(_) => {
-            println!("Could not save log file sof some reason.");
-        }
+        Err(_) => { println!("Could not save log file sof some reason."); }
     };
 }
 
@@ -102,9 +92,7 @@ fn calc_player_round_score(line: &String) -> Result<i16, Error> {
 
         match calc_expedition_score(&colour.to_string()) {
             Ok(score) => round_score += score,
-            Err(Error::CardError(card)) => {
-                return Result::Err(Error::CardError(card));
-            }
+            Err(Error::CardError(card)) => { return Result::Err(Error::CardError(card)); }
         };
     }
 
@@ -130,9 +118,7 @@ fn calc_expedition_score(cards_text: &String) -> Result<i16, Error> {
     for card in cards_text.trim().chars() {
         match card {
             'd' => doubler += 1,
-            '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => {
-                score += card.to_digit(10).unwrap() as i16
-            }
+            '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => { score += card.to_digit(10).unwrap() as i16 }
             't' | '1' => score += 10,
             _ => return Result::Err(Error::CardError(card)),
         };
