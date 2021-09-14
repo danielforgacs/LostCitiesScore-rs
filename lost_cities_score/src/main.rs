@@ -89,7 +89,7 @@ fn main() {
 
                 match calc_player_round_score(&line) {
                     Ok(score) => break score,
-                    Err(_err) => continue,
+                    Err(_err) => {},
                 };
 
                 // if round_score_2 != -888 {
@@ -126,8 +126,9 @@ fn calc_player_round_score(line: &String) -> Result<i16, Error> {
             Ok(score) => round_score += score,
             Err(Error::CardError(card)) => {
                 println!("Bad card: \"{}\"!", card);
-                round_score = -888;
-                break;
+                return Result::Err(Error::CardError(card))
+                // round_score = -888;
+                // break;
             }
         };
     }
