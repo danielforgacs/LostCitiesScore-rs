@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 use std::io::{self, Write};
 
 const GAME_LOG_FILE_NAME: &str = "LostCitiesScores";
+const GAME_LOG_DATE_TEMPLATE: &str = "%Y-%m-%d_%H-%M-%S";
 
 struct Player {
     score: i16,
@@ -106,7 +107,7 @@ fn calc_player_round_score(line: &String) -> Result<i16, Error> {
 fn create_game_log_name() -> String {
     loop {
         let now: DateTime<Utc> = Utc::now();
-        let logname = format!("{}_{}.txt", GAME_LOG_FILE_NAME, now.format("%Y-%m-%d_%H-%M-%S"));
+        let logname = format!("{}_{}.txt", GAME_LOG_FILE_NAME, now.format(GAME_LOG_DATE_TEMPLATE));
 
         if !std::path::Path::new(&logname).exists() {
             return logname;
