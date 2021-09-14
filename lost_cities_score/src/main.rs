@@ -307,6 +307,9 @@ fn test_calc_expedition_score() {
         },
         ((-20 + 2 + 3 + 4 + 5) * 4)
     );
+
+
+    assert_eq!(calc_expedition_score(&"ddd2345".to_string()).unwrap(), (-20 + 2 + 3 + 4 + 5) * 4);
 }
 
 #[test]
