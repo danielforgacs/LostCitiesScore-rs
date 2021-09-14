@@ -180,76 +180,16 @@ fn test_calc_expedition_score() {
         calc_expedition_score(&"2".to_string()).unwrap(),
         -18
     );
-    assert_eq!(
-        match calc_expedition_score(&"23".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        -20 + 2 + 3
-    );
-    assert_eq!(
-        match calc_expedition_score(&"234".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        -20 + 2 + 3 + 4
-    );
-    assert_eq!(
-        match calc_expedition_score(&"23456789".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 20
-    );
-    assert_eq!(
-        match calc_expedition_score(&"2345678".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8
-    );
-    assert_eq!(
-        match calc_expedition_score(&"d23456789".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 2) + 20
-    );
-    assert_eq!(
-        match calc_expedition_score(&"dd23456789".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 3) + 20
-    );
-    assert_eq!(
-        match calc_expedition_score(&"ddd23456789".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 4) + 20
-    );
-    assert_eq!(
-        match calc_expedition_score(&"ddd2345678".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8) * 4) + 20
-    );
-    assert_eq!(
-        match calc_expedition_score(&"ddd23456".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        ((-20 + 2 + 3 + 4 + 5 + 6) * 4) + 20
-    );
-    assert_eq!(
-        match calc_expedition_score(&"ddd2345".to_string()) {
-            Ok(k) => k,
-            Err(_) => -999,
-        },
-        ((-20 + 2 + 3 + 4 + 5) * 4)
-    );
+    assert_eq!(calc_expedition_score(&"23".to_string()).unwrap(), -20 + 2 + 3);
+    assert_eq!(calc_expedition_score(&"234".to_string()).unwrap(), -20 + 2 + 3 + 4);
+    assert_eq!(calc_expedition_score(&"23456789".to_string()).unwrap(), -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 20);
+    assert_eq!(calc_expedition_score(&"2345678".to_string()).unwrap(), -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8);
+    assert_eq!(calc_expedition_score(&"d23456789".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 2) + 20);
+    assert_eq!(calc_expedition_score(&"dd23456789".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 3) + 20);
+    assert_eq!(calc_expedition_score(&"ddd23456789".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 4) + 20);
+    assert_eq!(calc_expedition_score(&"ddd2345678".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8) * 4) + 20);
+    assert_eq!(calc_expedition_score(&"ddd23456".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6) * 4) + 20);
+    assert_eq!(calc_expedition_score(&"ddd2345".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5) * 4));
 
 
     assert_eq!(calc_expedition_score(&"ddd2345".to_string()).unwrap(), (-20 + 2 + 3 + 4 + 5) * 4);
