@@ -36,7 +36,7 @@ fn main() {
 
     for round in 0..=2 {
         for player_number in 0..=1 {
-            players[player_number].score = loop {
+            players[player_number].score += loop {
                 print!("--> Enter round: {}, player {} cards: ", round + 1, player_number + 1);
                 io::stdout().flush().unwrap();
 
