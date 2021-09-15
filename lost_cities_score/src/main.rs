@@ -106,14 +106,14 @@ fn create_game_log_name() -> String {
 
 fn sanity_check_player_cards(user_input: &str) -> bool {
     let mut result = true;
-    let mut expeditions_count = 1;
+    // let mut expeditions_count = 1;
     let approved_chars= vec![' ', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't'];
 
     for char in user_input.chars() {
-        match char {
-            ' ' => expeditions_count += 1,
-            _ => {}
-        };
+        // match char {
+        //     ' ' => expeditions_count += 1,
+        //     _ => {}
+        // };
 
         if !approved_chars.contains(&char) {
             result = false;
@@ -121,14 +121,22 @@ fn sanity_check_player_cards(user_input: &str) -> bool {
         };
     };
 
-    match expeditions_count {
-        1..=5 => {},
-        _ => result = false,
-    }
+    if user_input.split(' ').count() > 5 {
+        result = false;
+    };
+
+    // match expeditions_count {
+    //     1..=5 => {},
+    //     _ => result = false,
+    // }
 
     if user_input.len() < 1 {
         result = false;
     };
+
+    // for expedition in user_input.split(' ')
+    // let total_scores = vec!['d', 'd', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't'];
+    
 
     // println!("expeditions count: {}", expeditions_count);
 
@@ -217,4 +225,5 @@ fn test_sanity_check_player_cards() {
     assert_eq!(sanity_check_player_cards(&"2 2 2 2s"), false);
     assert_eq!(sanity_check_player_cards(&"2 2 2 2"), true);
     assert_eq!(sanity_check_player_cards(&""), false);
+    assert_eq!(sanity_check_player_cards(&"dddd"), false);
 }
