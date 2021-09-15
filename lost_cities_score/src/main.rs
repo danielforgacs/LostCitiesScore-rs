@@ -36,7 +36,7 @@ fn main() {
 
     for round in 0..=2 {
         for player_number in 0..=1 {
-            players[player_number].score = loop {
+            players[player_number].score += loop {
                 print!("--> Enter round: {}, player {} cards: ", round + 1, player_number + 1);
                 io::stdout().flush().unwrap();
 
@@ -63,7 +63,11 @@ fn main() {
                     _ => {},
                 };
 
-                
+                // match sanity_check_player_cards(&user_input) {
+                //     true => {}
+                //     false => { println!("Bad cards!"); continue }
+                // }
+
                 match calc_player_round_score(&user_input) {
                     Ok(score) => {
                         let logline = format!("round: {}, player {} cards: {}", round + 1, player_number + 1, user_input);
@@ -89,6 +93,58 @@ fn main() {
     };
 }
 
+fn create_game_log_name() -> String {
+    loop {
+        let now: DateTime<Utc> = Utc::now();
+        let logname = format!("{}_{}.txt", GAME_LOG_FILE_NAME, now.format(GAME_LOG_DATE_TEMPLATE));
+
+        if !std::path::Path::new(&logname).exists() {
+            return logname;
+        };
+    }
+}
+
+fn sanity_check_player_cards(user_input: &str) -> bool {
+    let mut result = true;
+    // let mut expeditions_count = 1;
+    let approved_chars= vec![' ', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't'];
+
+    for char in user_input.chars() {
+        // match char {
+        //     ' ' => expeditions_count += 1,
+        //     _ => {}
+        // };
+
+        if !approved_chars.contains(&char) {
+            result = false;
+            // println!("wrong char: {}", char);
+        };
+    };
+
+    if user_input.split(' ').count() > 5 {
+        result = false;
+    };
+
+    // match expeditions_count {
+    //     1..=5 => {},
+    //     _ => result = false,
+    // }
+
+    if user_input.len() < 1 {
+        result = false;
+    };
+
+    for expedition in user_input.split(' ') {
+        println!("checking expedition: {}", expedition);
+    };
+    // let total_scores = vec!['d', 'd', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't'];
+    
+
+    // println!("expeditions count: {}", expeditions_count);
+
+    result
+}
+
 fn calc_player_round_score(line: &String) -> Result<i16, Error> {
     let mut round_score = 0;
 
@@ -102,17 +158,6 @@ fn calc_player_round_score(line: &String) -> Result<i16, Error> {
     }
 
     Result::Ok(round_score)
-}
-
-fn create_game_log_name() -> String {
-    loop {
-        let now: DateTime<Utc> = Utc::now();
-        let logname = format!("{}_{}.txt", GAME_LOG_FILE_NAME, now.format(GAME_LOG_DATE_TEMPLATE));
-
-        if !std::path::Path::new(&logname).exists() {
-            return logname;
-        };
-    }
 }
 
 fn calc_expedition_score(cards_text: &String) -> Result<i16, Error> {
@@ -174,4 +219,16 @@ fn test_calc_player_round_score() {
     assert_eq!(calc_player_round_score(&"2 d34 dd456 ddd5678 ddd23456789t".to_string()).unwrap(), 121);
     assert_eq!(calc_player_round_score(&"ddd23456789t".to_string()).unwrap(), 156);
     assert_eq!(calc_player_round_score(&"ddd23456789t ddd23456789t ddd23456789t ddd23456789t ddd23456789t".to_string()).unwrap(), 780);
+    assert_eq!(calc_player_round_score(&"45789t dd3458t d23478t".to_string()).unwrap(), 81);
+    assert_eq!(calc_player_round_score(&"d234689 d23569t 69 dd56789t".to_string()).unwrap(), 144);
+}
+
+#[test]
+fn test_sanity_check_player_cards() {
+    assert_eq!(sanity_check_player_cards(&"2 2 2 2 2 3"), false);
+    assert_eq!(sanity_check_player_cards(&"2 2 2 2s"), false);
+    assert_eq!(sanity_check_player_cards(&"2 2 2 2"), true);
+    assert_eq!(sanity_check_player_cards(&""), false);
+    assert_eq!(sanity_check_player_cards(&"d23 dd345 ddd45678 ddd 23456y"), false);
+    // assert_eq!(sanity_check_player_cards(&"dddd"), false);
 }
