@@ -63,7 +63,11 @@ fn main() {
                     _ => {},
                 };
 
-                
+                match sanity_check_player_cards(&user_input) {
+                    true => {}
+                    false => { println!("Bad cards!"); continue }
+                }
+
                 match calc_player_round_score(&user_input) {
                     Ok(score) => {
                         let logline = format!("round: {}, player {} cards: {}", round + 1, player_number + 1, user_input);
@@ -98,6 +102,25 @@ fn create_game_log_name() -> String {
             return logname;
         };
     }
+}
+
+fn sanity_check_player_cards(user_input: &str) -> bool {
+    let mut result = true;
+    let mut expeditions = 1;
+
+    for char in user_input.chars() {
+        match char {
+            ' ' => expeditions += 1,
+            _ => {}
+        };
+    };
+
+    match expeditions {
+        1..=5 => {},
+        _ => result = false,
+    }
+
+    result
 }
 
 fn calc_player_round_score(line: &String) -> Result<i16, Error> {
@@ -174,4 +197,9 @@ fn test_calc_player_round_score() {
     assert_eq!(calc_player_round_score(&"2 d34 dd456 ddd5678 ddd23456789t".to_string()).unwrap(), 121);
     assert_eq!(calc_player_round_score(&"ddd23456789t".to_string()).unwrap(), 156);
     assert_eq!(calc_player_round_score(&"ddd23456789t ddd23456789t ddd23456789t ddd23456789t ddd23456789t".to_string()).unwrap(), 780);
+}
+
+#[test]
+fn test_sanity_check_player_cards() {
+    assert_eq!(sanity_check_player_cards(&"2 2 2 2 2 3"), false);
 }
