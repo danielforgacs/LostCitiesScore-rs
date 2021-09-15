@@ -89,6 +89,17 @@ fn main() {
     };
 }
 
+fn create_game_log_name() -> String {
+    loop {
+        let now: DateTime<Utc> = Utc::now();
+        let logname = format!("{}_{}.txt", GAME_LOG_FILE_NAME, now.format(GAME_LOG_DATE_TEMPLATE));
+
+        if !std::path::Path::new(&logname).exists() {
+            return logname;
+        };
+    }
+}
+
 fn calc_player_round_score(line: &String) -> Result<i16, Error> {
     let mut round_score = 0;
 
@@ -102,17 +113,6 @@ fn calc_player_round_score(line: &String) -> Result<i16, Error> {
     }
 
     Result::Ok(round_score)
-}
-
-fn create_game_log_name() -> String {
-    loop {
-        let now: DateTime<Utc> = Utc::now();
-        let logname = format!("{}_{}.txt", GAME_LOG_FILE_NAME, now.format(GAME_LOG_DATE_TEMPLATE));
-
-        if !std::path::Path::new(&logname).exists() {
-            return logname;
-        };
-    }
 }
 
 fn calc_expedition_score(cards_text: &String) -> Result<i16, Error> {
