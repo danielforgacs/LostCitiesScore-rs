@@ -106,19 +106,31 @@ fn create_game_log_name() -> String {
 
 fn sanity_check_player_cards(user_input: &str) -> bool {
     let mut result = true;
-    let mut expeditions = 1;
+    let mut expeditions_count = 1;
+    let approved_chars= vec![' ', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't'];
 
     for char in user_input.chars() {
         match char {
-            ' ' => expeditions += 1,
+            ' ' => expeditions_count += 1,
             _ => {}
+        };
+
+        if !approved_chars.contains(&char) {
+            result = false;
+            // println!("wrong char: {}", char);
         };
     };
 
-    match expeditions {
+    match expeditions_count {
         1..=5 => {},
         _ => result = false,
     }
+
+    if user_input.len() < 1 {
+        result = false;
+    };
+
+    // println!("expeditions count: {}", expeditions_count);
 
     result
 }
@@ -202,4 +214,7 @@ fn test_calc_player_round_score() {
 #[test]
 fn test_sanity_check_player_cards() {
     assert_eq!(sanity_check_player_cards(&"2 2 2 2 2 3"), false);
+    assert_eq!(sanity_check_player_cards(&"2 2 2 2s"), false);
+    assert_eq!(sanity_check_player_cards(&"2 2 2 2"), true);
+    assert_eq!(sanity_check_player_cards(&""), false);
 }
