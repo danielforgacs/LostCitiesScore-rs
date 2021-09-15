@@ -134,7 +134,9 @@ fn sanity_check_player_cards(user_input: &str) -> bool {
         result = false;
     };
 
-    // for expedition in user_input.split(' ')
+    for expedition in user_input.split(' ') {
+        println!("checking expedition: {}", expedition);
+    };
     // let total_scores = vec!['d', 'd', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't'];
     
 
@@ -226,4 +228,5 @@ fn test_sanity_check_player_cards() {
     assert_eq!(sanity_check_player_cards(&"2 2 2 2"), true);
     assert_eq!(sanity_check_player_cards(&""), false);
     assert_eq!(sanity_check_player_cards(&"dddd"), false);
+    assert_eq!(sanity_check_player_cards(&"d23 dd345 ddd45678 ddd 23456y"), false);
 }
