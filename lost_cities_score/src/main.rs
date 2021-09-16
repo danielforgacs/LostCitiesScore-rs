@@ -63,10 +63,10 @@ fn main() {
                     _ => {},
                 };
 
-                match sanity_check_player_cards(&user_input) {
-                    true => {}
-                    false => { println!("Bad cards!"); continue }
-                }
+                // match sanity_check_player_cards(&user_input) {
+                //     true => {}
+                //     false => { println!("Bad cards!"); continue }
+                // }
 
                 match calc_player_round_score(&user_input) {
                     Ok(score) => {
