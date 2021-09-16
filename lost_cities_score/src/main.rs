@@ -80,8 +80,20 @@ fn main() {
         }
     }
 
+    let mut winner_index = 0;
+
+    if players[0].score < players[1].score {
+        winner_index = 1;
+    };
+
     for (index, player) in players.iter().enumerate() {
-        log += &format!("player {} score: {}\n", index + 1, player.score).as_str();
+        log += &format!("player {} score: {}", index + 1, player.score).as_str();
+
+        if index == winner_index {
+            log += &format!(" <-- WINNER\n");
+        } else {
+            log += &format!("\n");
+        };
     }
 
     println!("\n\nResults - [log:{}]:", logname);
