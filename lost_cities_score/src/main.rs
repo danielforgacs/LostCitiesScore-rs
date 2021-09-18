@@ -35,9 +35,15 @@ fn main() {
     let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 0..=2 {
+        let logline = format!("Round {}:\n", round+1);
+        print!("{}", logline);
+        log += logline.as_str();
+
         for player_number in 0..=1 {
             players[player_number].score += loop {
-                print!("--> Enter round: {}, player {} cards: ", round + 1, player_number + 1);
+                let logline = format!("   player {} cards: ", player_number + 1);
+                print!("{}", logline);
+
                 io::stdout().flush().unwrap();
 
                 let mut user_input = String::new();
@@ -64,9 +70,11 @@ fn main() {
                     false => { continue }
                 }
 
+                log += logline.as_str();
+
                 match calc_player_round_score(&user_input) {
                     Ok(score) => {
-                        let logline = format!("round: {}, player {} cards: {}", round + 1, player_number + 1, user_input);
+                        let logline = format!("{}", user_input);
                         log += &logline.as_str();
                         break score
                     },
