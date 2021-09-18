@@ -56,17 +56,13 @@ fn main() {
                         println!("Bye!");
                         return;
                     },
-                    "\n" => {
-                        println!("Player must have a card!");
-                        continue;
-                    },
                     _ => {},
                 };
 
-                // match sanity_check_player_cards(&user_input) {
-                //     true => {}
-                //     false => { println!("Bad cards!"); continue }
-                // }
+                match sanity_check_player_cards(&user_input) {
+                    true => {}
+                    false => { continue }
+                }
 
                 match calc_player_round_score(&user_input) {
                     Ok(score) => {
@@ -80,11 +76,23 @@ fn main() {
         }
     }
 
+    let mut winner_index = 0;
+
+    if players[0].score < players[1].score {
+        winner_index = 1;
+    };
+
     for (index, player) in players.iter().enumerate() {
-        log += &format!("player {} score: {}\n", index + 1, player.score).as_str();
+        log += &format!("player {} score: {}", index + 1, player.score).as_str();
+
+        if index == winner_index {
+            log += &format!(" <-- WINNER\n");
+        } else {
+            log += &format!("\n");
+        };
     }
 
-    println!("\n\nResults - [log:{}]:", logname);
+    println!("\n\nResults - log file: {}:", logname);
     println!("{}", log);
 
     match std::fs::write(logname, log) {
@@ -105,44 +113,44 @@ fn create_game_log_name() -> String {
 }
 
 fn sanity_check_player_cards(user_input: &str) -> bool {
-    let mut result = true;
-    // let mut expeditions_count = 1;
-    let approved_chars= vec![' ', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't'];
+    let mut is_input_valid = true;
+    let mut expedition_count = 0;
 
-    for char in user_input.chars() {
-        // match char {
-        //     ' ' => expeditions_count += 1,
-        //     _ => {}
-        // };
-
-        if !approved_chars.contains(&char) {
-            result = false;
-            // println!("wrong char: {}", char);
-        };
-    };
-
-    if user_input.split(' ').count() > 5 {
-        result = false;
-    };
-
-    // match expeditions_count {
-    //     1..=5 => {},
-    //     _ => result = false,
-    // }
-
-    if user_input.len() < 1 {
-        result = false;
+    match user_input {
+        "\n" | "" => {
+            println!("User must have cards!");
+            return false;
+        },
+        _ => {},
     };
 
     for expedition in user_input.split(' ') {
-        println!("checking expedition: {}", expedition);
+        expedition_count += 1;
+        
+        if expedition_count > 6 {
+            println!("Too many expeditions. Count: {}, Cards: {}", expedition_count, user_input);
+            is_input_valid = false;
+            break
+        };
+        
+        let mut valid_cards = vec!['d', 'd', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't', '\n'];
+
+        'card_loop: for card in expedition.chars() {
+
+            for index in 0..valid_cards.len() {
+                if card == valid_cards[index] {
+                    valid_cards.remove(index);
+                    continue 'card_loop;
+                };
+            };
+
+            println!("Bad or duplicate card: \"{}\"", card);
+            is_input_valid = false;
+            break;
+        };
     };
-    // let total_scores = vec!['d', 'd', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't'];
-    
 
-    // println!("expeditions count: {}", expeditions_count);
-
-    result
+    is_input_valid
 }
 
 fn calc_player_round_score(line: &String) -> Result<i16, Error> {
@@ -225,10 +233,16 @@ fn test_calc_player_round_score() {
 
 #[test]
 fn test_sanity_check_player_cards() {
-    assert_eq!(sanity_check_player_cards(&"2 2 2 2 2 3"), false);
+    assert_eq!(sanity_check_player_cards(&"2 3 4 5 6 7 8 9"), false);
+    assert_eq!(sanity_check_player_cards(&"dddd"), false);
+    assert_eq!(sanity_check_player_cards(&"23x"), false);
     assert_eq!(sanity_check_player_cards(&"2 2 2 2s"), false);
     assert_eq!(sanity_check_player_cards(&"2 2 2 2"), true);
     assert_eq!(sanity_check_player_cards(&""), false);
     assert_eq!(sanity_check_player_cards(&"d23 dd345 ddd45678 ddd 23456y"), false);
-    // assert_eq!(sanity_check_player_cards(&"dddd"), false);
+    assert_eq!(sanity_check_player_cards(&"dddd"), false);
+    assert_eq!(sanity_check_player_cards(&"dd23456789t dd23456789t"), true);
+    assert_eq!(sanity_check_player_cards(&"t98765432ddd t98765432ddd"), true);
+    assert_eq!(sanity_check_player_cards(&"t98765432dddt98765432ddd"), false);
+    assert_eq!(sanity_check_player_cards(&"t98765432ddd t987654932ddd"), false);
 }
