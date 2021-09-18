@@ -19,6 +19,11 @@ impl Player {
     }
 }
 
+struct LoggedResult {
+    result: i16,
+    logtext: String,
+}
+
 fn main() {
     let logname = create_game_log_name();
 
@@ -35,7 +40,8 @@ fn main() {
     let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 0..=2 {
-        let logline = format!("Round {}:\n", round+1);
+        let logline = format!("\
+            =================================================\nRound {}:\n", round+1);
         print!("{}", logline);
         log += logline.as_str();
 
@@ -73,15 +79,22 @@ fn main() {
                 log += logline.as_str();
 
                 match calc_player_round_score(&user_input) {
-                    Ok(score) => {
+                    Ok(result) => {
+                        println!("{}", result.logtext);
+                        let score = result.result;
                         let logline = format!("{}", user_input);
                         log += &logline.as_str();
+                        log += &result.logtext.as_str();
                         break score
                     },
                     Err(Error::CardError(card)) => { println!("Bad card: \"{:?}\"!", card); },
                 };
             };
+
         }
+        println!("-------------------------------------------------");
+        println!("player 1 score: {}", players[0].score);
+        println!("player 2 score: {}", players[1].score);
     }
 
     let mut winner_index = 0;
@@ -161,19 +174,24 @@ fn sanity_check_player_cards(user_input: &str) -> bool {
     is_input_valid
 }
 
-fn calc_player_round_score(line: &String) -> Result<i16, Error> {
+fn calc_player_round_score(line: &String) -> Result<LoggedResult, Error> {
     let mut round_score = 0;
+    let mut logtext = String::from("        Round breakdown:\n");
 
     for colour in line.split(' ') {
         let colour = colour.trim();
 
         match calc_expedition_score(&colour.to_string()) {
-            Ok(score) => round_score += score,
+            Ok(score) => {
+                round_score += score;
+                let logline = format!("            expedition: {}, score: {}\n", colour, score);
+                logtext += &logline.as_str();
+            },
             Err(Error::CardError(card)) => { return Result::Err(Error::CardError(card)); }
         };
     }
 
-    Result::Ok(round_score)
+    Result::Ok(LoggedResult { result: round_score, logtext: logtext })
 }
 
 fn calc_expedition_score(cards_text: &String) -> Result<i16, Error> {
