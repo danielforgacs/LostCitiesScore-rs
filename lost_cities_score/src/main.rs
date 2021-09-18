@@ -43,7 +43,6 @@ fn main() {
                 let mut user_input = String::new();
                 let stdin_result = io::stdin().read_line(&mut user_input);
 
-/* <------------------
                 match stdin_result {
                     Err(err) => {
                         println!("Could not read player input! Error: {}", err);
@@ -57,16 +56,12 @@ fn main() {
                         println!("Bye!");
                         return;
                     },
-                    "\n" => {
-                        println!("Player must have a card!");
-                        continue;
-                    },
                     _ => {},
                 };
------------------- >*/
+
                 match sanity_check_player_cards(&user_input) {
                     true => {}
-                    false => { println!("Bad cards!"); continue }
+                    false => { continue }
                 }
 
                 match calc_player_round_score(&user_input) {
@@ -121,6 +116,14 @@ fn sanity_check_player_cards(user_input: &str) -> bool {
     let mut is_input_valid = true;
     let mut expedition_count = 0;
 
+    match user_input {
+        "\n" => {
+            println!("User must have cards!");
+            return false;
+        },
+        _ => {},
+    };
+
     for expedition in user_input.split(' ') {
         expedition_count += 1;
         
@@ -130,10 +133,9 @@ fn sanity_check_player_cards(user_input: &str) -> bool {
             break
         };
         
-        let mut valid_cards = vec!['d', 'd', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't'];
+        let mut valid_cards = vec!['d', 'd', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't', '\n'];
 
         'card_loop: for card in expedition.chars() {
-            // println!("    checking card: {}", card);
 
             for index in 0..valid_cards.len() {
                 if card == valid_cards[index] {
@@ -142,8 +144,9 @@ fn sanity_check_player_cards(user_input: &str) -> bool {
                 };
             };
 
-            // println!("BAD vhar: {}", card);
-            is_input_valid = false
+            println!("Bad or duplicate card: \"{}\"", card);
+            is_input_valid = false;
+            break;
         };
     };
 
@@ -232,7 +235,7 @@ fn test_calc_player_round_score() {
 fn test_sanity_check_player_cards() {
     assert_eq!(sanity_check_player_cards(&"2 3 4 5 6 7 8 9"), false);
     assert_eq!(sanity_check_player_cards(&"dddd"), false);
-    // assert_eq!(sanity_check_player_cards(&"2 2 2 2 2 3"), false);
+    assert_eq!(sanity_check_player_cards(&"23x"), false);
     // assert_eq!(sanity_check_player_cards(&"2 2 2 2s"), false);
     // assert_eq!(sanity_check_player_cards(&"2 2 2 2"), true);
     // assert_eq!(sanity_check_player_cards(&""), false);
