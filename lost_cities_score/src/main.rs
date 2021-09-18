@@ -62,11 +62,10 @@ fn main() {
                     },
                     _ => {},
                 };
-
-                // match sanity_check_player_cards(&user_input) {
-                //     true => {}
-                //     false => { println!("Bad cards!"); continue }
-                // }
+                match sanity_check_player_cards(&user_input) {
+                    true => {}
+                    false => { println!("Bad cards!"); continue }
+                }
 
                 match calc_player_round_score(&user_input) {
                     Ok(score) => {
@@ -117,44 +116,41 @@ fn create_game_log_name() -> String {
 }
 
 fn sanity_check_player_cards(user_input: &str) -> bool {
-    let mut result = true;
-    // let mut expeditions_count = 1;
-    let approved_chars= vec![' ', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't'];
+    let mut is_input_valid = true;
+    let mut expedition_count = 0;
 
-    for char in user_input.chars() {
-        // match char {
-        //     ' ' => expeditions_count += 1,
-        //     _ => {}
-        // };
+    for expedition in user_input.split(' ') {
+        expedition_count += 1;
+        
+        if expedition_count > 6 {
+            println!("Too many expeditions: {}", user_input);
+            is_input_valid = false;
+            break
+        };
+        
+        let mut valid_cards = vec!['d', 'd', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't'];
+        // println!(">>> {}", valid_cards[0]);
+        // println!(">>> {}", valid_cards[11]);
+        // println!(">>> {}", valid_cards.len());
 
-        if !approved_chars.contains(&char) {
-            result = false;
-            // println!("wrong char: {}", char);
+        // println!("checking expedition: {}", expedition);
+
+        'card_loop: for card in expedition.chars() {
+            // println!("    checking card: {}", card);
+
+            for index in 0..valid_cards.len() {
+                if card == valid_cards[index] {
+                    valid_cards.remove(index);
+                    continue 'card_loop;
+                };
+            };
+
+            // println!("BAD vhar: {}", card);
+            is_input_valid = false
         };
     };
 
-    if user_input.split(' ').count() > 5 {
-        result = false;
-    };
-
-    // match expeditions_count {
-    //     1..=5 => {},
-    //     _ => result = false,
-    // }
-
-    if user_input.len() < 1 {
-        result = false;
-    };
-
-    for expedition in user_input.split(' ') {
-        println!("checking expedition: {}", expedition);
-    };
-    // let total_scores = vec!['d', 'd', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't'];
-    
-
-    // println!("expeditions count: {}", expeditions_count);
-
-    result
+    is_input_valid
 }
 
 fn calc_player_round_score(line: &String) -> Result<i16, Error> {
@@ -237,10 +233,12 @@ fn test_calc_player_round_score() {
 
 #[test]
 fn test_sanity_check_player_cards() {
-    assert_eq!(sanity_check_player_cards(&"2 2 2 2 2 3"), false);
-    assert_eq!(sanity_check_player_cards(&"2 2 2 2s"), false);
-    assert_eq!(sanity_check_player_cards(&"2 2 2 2"), true);
-    assert_eq!(sanity_check_player_cards(&""), false);
-    assert_eq!(sanity_check_player_cards(&"d23 dd345 ddd45678 ddd 23456y"), false);
+    assert_eq!(sanity_check_player_cards(&"2 3 4 5 6 7 8 9"), false);
+    assert_eq!(sanity_check_player_cards(&"dddd"), false);
+    // assert_eq!(sanity_check_player_cards(&"2 2 2 2 2 3"), false);
+    // assert_eq!(sanity_check_player_cards(&"2 2 2 2s"), false);
+    // assert_eq!(sanity_check_player_cards(&"2 2 2 2"), true);
+    // assert_eq!(sanity_check_player_cards(&""), false);
+    // assert_eq!(sanity_check_player_cards(&"d23 dd345 ddd45678 ddd 23456y"), false);
     // assert_eq!(sanity_check_player_cards(&"dddd"), false);
 }
