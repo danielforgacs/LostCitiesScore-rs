@@ -43,7 +43,6 @@ fn main() {
             players[player_number].score += loop {
                 let logline = format!("   player {} cards: ", player_number + 1);
                 print!("{}", logline);
-                log += logline.as_str();
 
                 io::stdout().flush().unwrap();
 
@@ -70,6 +69,8 @@ fn main() {
                     true => {}
                     false => { continue }
                 }
+
+                log += logline.as_str();
 
                 match calc_player_round_score(&user_input) {
                     Ok(score) => {
