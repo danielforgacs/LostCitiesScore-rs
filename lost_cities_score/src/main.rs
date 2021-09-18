@@ -117,7 +117,7 @@ fn sanity_check_player_cards(user_input: &str) -> bool {
     let mut expedition_count = 0;
 
     match user_input {
-        "\n" => {
+        "\n" | "" => {
             println!("User must have cards!");
             return false;
         },
@@ -236,9 +236,9 @@ fn test_sanity_check_player_cards() {
     assert_eq!(sanity_check_player_cards(&"2 3 4 5 6 7 8 9"), false);
     assert_eq!(sanity_check_player_cards(&"dddd"), false);
     assert_eq!(sanity_check_player_cards(&"23x"), false);
-    // assert_eq!(sanity_check_player_cards(&"2 2 2 2s"), false);
-    // assert_eq!(sanity_check_player_cards(&"2 2 2 2"), true);
-    // assert_eq!(sanity_check_player_cards(&""), false);
-    // assert_eq!(sanity_check_player_cards(&"d23 dd345 ddd45678 ddd 23456y"), false);
-    // assert_eq!(sanity_check_player_cards(&"dddd"), false);
+    assert_eq!(sanity_check_player_cards(&"2 2 2 2s"), false);
+    assert_eq!(sanity_check_player_cards(&"2 2 2 2"), true);
+    assert_eq!(sanity_check_player_cards(&""), false);
+    assert_eq!(sanity_check_player_cards(&"d23 dd345 ddd45678 ddd 23456y"), false);
+    assert_eq!(sanity_check_player_cards(&"dddd"), false);
 }
