@@ -32,7 +32,7 @@ fn main() {
         type 'quit' to finish the game. \
         \ncards can be: d=double, t=10, 2-9\n\
         game log name:\n{}\n\
-        ========================================\n",
+        ========================================",
         logname
     );
 
@@ -40,7 +40,7 @@ fn main() {
     let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 0..=2 {
-        let logline = format!("\n=================================================\nRound {}:\n", round+1);
+        let logline = format!("=================================================\nRound {}:\n", round+1);
         print!("{}", logline);
         log += logline.as_str();
 
