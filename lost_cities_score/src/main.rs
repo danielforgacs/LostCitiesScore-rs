@@ -40,7 +40,8 @@ fn main() {
     let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 0..=2 {
-        let logline = format!("Round {}:\n", round+1);
+        let logline = format!("\
+            =================================================\nRound {}:\n", round+1);
         print!("{}", logline);
         log += logline.as_str();
 
@@ -89,7 +90,12 @@ fn main() {
                     Err(Error::CardError(card)) => { println!("Bad card: \"{:?}\"!", card); },
                 };
             };
+
         }
+        // println!("=================================================");
+        println!("-------------------------------------------------");
+        println!("player 1 score: {}", players[0].score);
+        println!("player 2 score: {}", players[1].score);
     }
 
     let mut winner_index = 0;
