@@ -19,6 +19,11 @@ impl Player {
     }
 }
 
+struct LoggedResult {
+    result: i16,
+    logtext: String,
+}
+
 fn main() {
     let logname = create_game_log_name();
 
@@ -73,9 +78,12 @@ fn main() {
                 log += logline.as_str();
 
                 match calc_player_round_score(&user_input) {
-                    Ok(score) => {
+                    Ok(result) => {
+                        println!("{}", result.logtext);
+                        let score = result.result;
                         let logline = format!("{}", user_input);
                         log += &logline.as_str();
+                        log += &result.logtext.as_str();
                         break score
                     },
                     Err(Error::CardError(card)) => { println!("Bad card: \"{:?}\"!", card); },
@@ -161,7 +169,7 @@ fn sanity_check_player_cards(user_input: &str) -> bool {
     is_input_valid
 }
 
-fn calc_player_round_score(line: &String) -> Result<i16, Error> {
+fn calc_player_round_score(line: &String) -> Result<LoggedResult, Error> {
     let mut round_score = 0;
     let mut logtext = String::from("        Round breakdown:\n");
 
@@ -178,9 +186,9 @@ fn calc_player_round_score(line: &String) -> Result<i16, Error> {
         };
     }
 
-    println!("{}", logtext);
+    // println!("{}", logtext);
 
-    Result::Ok(round_score)
+    Result::Ok(LoggedResult { result: round_score, logtext: logtext })
 }
 
 fn calc_expedition_score(cards_text: &String) -> Result<i16, Error> {
