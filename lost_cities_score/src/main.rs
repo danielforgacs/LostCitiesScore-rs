@@ -40,8 +40,7 @@ fn main() {
     let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 0..=2 {
-        let logline = format!("\
-            =================================================\nRound {}:\n", round+1);
+        let logline = format!("\n=================================================\nRound {}:\n", round+1);
         print!("{}", logline);
         log += logline.as_str();
 
@@ -92,9 +91,14 @@ fn main() {
             };
 
         }
-        println!("-------------------------------------------------");
-        println!("player 1 score: {}", players[0].score);
-        println!("player 2 score: {}", players[1].score);
+        // println!("-------------------------------------------------");
+        // println!("player 1 score: {}", players[0].score);
+        // println!("player 2 score: {}", players[1].score);
+        let mut logtext = "-------------------------------------------------".to_string();
+        logtext += format!("\nplayer 1 score: {}", players[0].score).as_str();
+        logtext += format!("\nplayer 2 score: {}\n", players[1].score).as_str();
+        print!("{}", logtext);
+        log += &logtext.as_str();
     }
 
     let mut winner_index = 0;
@@ -103,8 +107,10 @@ fn main() {
         winner_index = 1;
     };
 
+    log += &"\n############################################\n".to_string();
+
     for (index, player) in players.iter().enumerate() {
-        log += &format!("player {} score: {}", index + 1, player.score).as_str();
+        log += &format!("player {} total score: {}", index + 1, player.score).as_str();
 
         if index == winner_index {
             log += &format!(" <-- WINNER\n");
