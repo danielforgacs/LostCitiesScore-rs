@@ -43,6 +43,7 @@ fn main() {
                 let mut user_input = String::new();
                 let stdin_result = io::stdin().read_line(&mut user_input);
 
+/* <------------------
                 match stdin_result {
                     Err(err) => {
                         println!("Could not read player input! Error: {}", err);
@@ -62,6 +63,7 @@ fn main() {
                     },
                     _ => {},
                 };
+------------------ >*/
                 match sanity_check_player_cards(&user_input) {
                     true => {}
                     false => { println!("Bad cards!"); continue }
@@ -123,17 +125,12 @@ fn sanity_check_player_cards(user_input: &str) -> bool {
         expedition_count += 1;
         
         if expedition_count > 6 {
-            println!("Too many expeditions: {}", user_input);
+            println!("Too many expeditions. Count: {}, Cards: {}", expedition_count, user_input);
             is_input_valid = false;
             break
         };
         
         let mut valid_cards = vec!['d', 'd', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't'];
-        // println!(">>> {}", valid_cards[0]);
-        // println!(">>> {}", valid_cards[11]);
-        // println!(">>> {}", valid_cards.len());
-
-        // println!("checking expedition: {}", expedition);
 
         'card_loop: for card in expedition.chars() {
             // println!("    checking card: {}", card);
