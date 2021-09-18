@@ -163,15 +163,22 @@ fn sanity_check_player_cards(user_input: &str) -> bool {
 
 fn calc_player_round_score(line: &String) -> Result<i16, Error> {
     let mut round_score = 0;
+    let mut logtext = String::from("        Round breakdown:\n");
 
     for colour in line.split(' ') {
         let colour = colour.trim();
 
         match calc_expedition_score(&colour.to_string()) {
-            Ok(score) => round_score += score,
+            Ok(score) => {
+                round_score += score;
+                let logline = format!("            expedition: {}, score: {}\n", colour, score);
+                logtext += &logline.as_str();
+            },
             Err(Error::CardError(card)) => { return Result::Err(Error::CardError(card)); }
         };
     }
+
+    println!("{}", logtext);
 
     Result::Ok(round_score)
 }
