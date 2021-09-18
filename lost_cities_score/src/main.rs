@@ -36,6 +36,7 @@ fn main() {
 
     for round in 0..=2 {
         println!("Round {}:", round+1);
+        log += format!("Round {}:\n", round+1).as_str();
 
         for player_number in 0..=1 {
             players[player_number].score += loop {
