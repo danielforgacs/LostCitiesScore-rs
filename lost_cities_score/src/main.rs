@@ -75,7 +75,7 @@ fn main() {
                 match calc_player_round_score(&user_input) {
                     Ok(score) => {
                         // let logline = format!("round: {}, player {} cards: {}", round + 1, player_number + 1, user_input);
-                        let logline = format!("{}\n", user_input);
+                        let logline = format!("{}", user_input);
                         log += &logline.as_str();
                         break score
                     },
