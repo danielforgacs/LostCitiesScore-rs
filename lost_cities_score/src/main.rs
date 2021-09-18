@@ -35,9 +35,11 @@ fn main() {
     let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 0..=2 {
+        println!("Round {}:", round+1);
+
         for player_number in 0..=1 {
             players[player_number].score += loop {
-                print!("--> Enter round: {}, player {} cards: ", round + 1, player_number + 1);
+                print!(" player {} cards: ", player_number + 1);
                 io::stdout().flush().unwrap();
 
                 let mut user_input = String::new();
