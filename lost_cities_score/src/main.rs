@@ -92,7 +92,7 @@ fn main() {
         };
     }
 
-    println!("\n\nResults - [log:{}]:", logname);
+    println!("\n\nResults - log file: {}:", logname);
     println!("{}", log);
 
     match std::fs::write(logname, log) {
