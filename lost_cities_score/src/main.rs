@@ -92,7 +92,6 @@ fn main() {
             };
 
         }
-        // println!("=================================================");
         println!("-------------------------------------------------");
         println!("player 1 score: {}", players[0].score);
         println!("player 2 score: {}", players[1].score);
@@ -191,8 +190,6 @@ fn calc_player_round_score(line: &String) -> Result<LoggedResult, Error> {
             Err(Error::CardError(card)) => { return Result::Err(Error::CardError(card)); }
         };
     }
-
-    // println!("{}", logtext);
 
     Result::Ok(LoggedResult { result: round_score, logtext: logtext })
 }
