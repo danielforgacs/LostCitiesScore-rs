@@ -43,6 +43,7 @@ fn main() {
         let logline = format!("=================================================\n>>>>>>>>>>> ROUND: {} <<<<<<<<<<<\n", round+1);
         print!("{}", logline);
         log += logline.as_str();
+        let mut round_scores: Vec<i16> = Vec::new();
 
         for player_number in 0..=1 {
             let round_score = loop {
@@ -84,7 +85,6 @@ fn main() {
                         let logline = format!("{}", user_input);
                         log += &logline.as_str();
                         log += &result.logtext.as_str();
-                        // println!("round score: {}", score);
                         break score
                     },
                     Err(Error::CardError(card)) => { println!("Bad card: \"{:?}\"!", card); },
@@ -92,14 +92,15 @@ fn main() {
             };
 
             players[player_number].score += round_score;
-            println!("> round score: {}", round_score);
+            round_scores.push(round_score);
 
 
         }
-        let mut logtext = "-------------------------------------------------".to_string();
-        logtext += format!("\nplayer 1 score: {}", players[0].score).as_str();
-        logtext += format!("\nplayer 2 score: {}\n", players[1].score).as_str();
+        let mut logtext = "_________________________________________________\n-------------------------------------------------".to_string();
+        logtext += format!("\nplayer 1 score: {} - total: {}", round_scores[0], players[0].score).as_str();
+        logtext += format!("\nplayer 2 score: {} - total: {}\n", round_scores[1], players[1].score).as_str();
         print!("{}", logtext);
+        // print!("RS: {:?}", round_scores);
         log += &logtext.as_str();
     }
 
@@ -109,7 +110,10 @@ fn main() {
         winner_index = 1;
     };
 
-    log += &"\n############################################\n".to_string();
+    // log += &"\n############################################\n".to_string();
+    // log += &"\n--------------------------------------------\n".to_string();
+    // log += &"\n____________________________________________\n".to_string();
+    log += &"____________________________________________\n============================================\n".to_string();
 
     for (index, player) in players.iter().enumerate() {
         log += &format!("player {} total score: {}", index + 1, player.score).as_str();
