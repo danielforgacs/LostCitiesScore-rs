@@ -40,7 +40,8 @@ fn main() {
     let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 0..=2 {
-        let logline = format!("=================================================\n>>>>>>>>>>> ROUND: {} <<<<<<<<<<<\n", round+1);
+        let logline = format!("=================================================\n\
+            >>>>>>>>>>> ROUND: {} <<<<<<<<<<<\n", round+1);
         print!("{}", logline);
         log += logline.as_str();
         let mut round_scores: Vec<i16> = Vec::new();
@@ -100,7 +101,6 @@ fn main() {
         logtext += format!("\nplayer 1 score: {} - total: {}", round_scores[0], players[0].score).as_str();
         logtext += format!("\nplayer 2 score: {} - total: {}\n", round_scores[1], players[1].score).as_str();
         print!("{}", logtext);
-        // print!("RS: {:?}", round_scores);
         log += &logtext.as_str();
     }
 
@@ -110,10 +110,8 @@ fn main() {
         winner_index = 1;
     };
 
-    // log += &"\n############################################\n".to_string();
-    // log += &"\n--------------------------------------------\n".to_string();
-    // log += &"\n____________________________________________\n".to_string();
-    log += &"____________________________________________\n============================================\n".to_string();
+    log += &"____________________________________________\n\
+        ============================================\n".to_string();
 
     for (index, player) in players.iter().enumerate() {
         log += &format!("player {} total score: {}", index + 1, player.score).as_str();
