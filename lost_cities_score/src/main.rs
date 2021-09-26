@@ -45,6 +45,7 @@ fn main() {
         print!("{}", logline);
         log += logline.as_str();
         let mut round_scores: Vec<i16> = Vec::new();
+        let mut round_breakdowns: Vec<String> = Vec::new();
 
         for player_number in 0..=1 {
             let round_score = loop {
@@ -86,6 +87,7 @@ fn main() {
                         let logline = format!("{}", user_input);
                         log += &logline.as_str();
                         log += &result.logtext.as_str();
+                        round_breakdowns.push(result.logtext);
                         break score
                     },
                     Err(Error::CardError(card)) => { println!("Bad card: \"{:?}\"!", card); },
@@ -102,6 +104,9 @@ fn main() {
         logtext += format!("\nplayer 2 score: {} - total: {}\n", round_scores[1], players[1].score).as_str();
         print!("{}", logtext);
         log += &logtext.as_str();
+
+        // print!("player 1 {}", round_breakdowns[0]);
+        // print!("player 2 {}", round_breakdowns[1]);
     }
 
     let mut winner_index = 0;
