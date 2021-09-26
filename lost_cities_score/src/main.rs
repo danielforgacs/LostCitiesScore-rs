@@ -19,15 +19,20 @@ impl Player {
     }
 }
 
+struct LoggedResult {
+    result: i16,
+    logtext: String,
+}
+
 fn main() {
     let logname = create_game_log_name();
 
     println!(
         "===== Lost Cities Scores Counter =====\n\
-        type 'quit' to finish the game. \
-        \ncards can be: d=double, t=10, 2-9\n\
-        game log name:\n{}\n\
-        ========================================\n",
+        type 'quit' to quit the game. \
+        \ncards can be: d = double, t = 10, 2-9\n\
+        game log file:\n{}\n\
+        ========================================",
         logname
     );
 
@@ -35,9 +40,18 @@ fn main() {
     let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 0..=2 {
+        let logline = format!("=================================================\n\
+            >>>>>>>>>>> ROUND: {} <<<<<<<<<<<\n", round+1);
+        print!("{}", logline);
+        log += logline.as_str();
+        let mut round_scores: Vec<i16> = Vec::new();
+        let mut round_breakdowns: Vec<String> = Vec::new();
+
         for player_number in 0..=1 {
-            players[player_number].score = loop {
-                print!("--> Enter round: {}, player {} cards: ", round + 1, player_number + 1);
+            let round_score = loop {
+                let logline = format!("   player {} cards: ", player_number + 1);
+                print!("{}", logline);
+
                 io::stdout().flush().unwrap();
 
                 let mut user_input = String::new();
@@ -56,52 +70,71 @@ fn main() {
                         println!("Bye!");
                         return;
                     },
-                    "\n" => {
-                        println!("Player must have a card!");
-                        continue;
-                    },
                     _ => {},
                 };
 
-                
+                match sanity_check_player_cards(&user_input) {
+                    true => {}
+                    false => { continue }
+                }
+
+                log += logline.as_str();
+
                 match calc_player_round_score(&user_input) {
-                    Ok(score) => {
-                        let logline = format!("round: {}, player {} cards: {}", round + 1, player_number + 1, user_input);
+                    Ok(result) => {
+                        println!("{}", result.logtext);
+                        let score = result.result;
+                        let logline = format!("{}", user_input);
                         log += &logline.as_str();
+                        log += &result.logtext.as_str();
+                        round_breakdowns.push(result.logtext);
                         break score
                     },
                     Err(Error::CardError(card)) => { println!("Bad card: \"{:?}\"!", card); },
                 };
             };
+
+            players[player_number].score += round_score;
+            round_scores.push(round_score);
+
+
         }
+        let mut logtext = "_________________________________________________".to_string();
+        logtext += format!("\nplayer 1 score: {} - total: {}", round_scores[0], players[0].score).as_str();
+        logtext += format!("\nplayer 2 score: {} - total: {}\n", round_scores[1], players[1].score).as_str();
+        print!("{}", logtext);
+        log += &logtext.as_str();
+
+        // print!("player 1 {}", round_breakdowns[0]);
+        // print!("player 2 {}", round_breakdowns[1]);
     }
+
+    let mut winner_index = 0;
+
+    if players[0].score < players[1].score {
+        winner_index = 1;
+    };
+
+    log += &"____________________________________________\n\
+        ============================================\n".to_string();
 
     for (index, player) in players.iter().enumerate() {
-        log += &format!("player {} score: {}\n", index + 1, player.score).as_str();
+        log += &format!("player {} total score: {}", index + 1, player.score).as_str();
+
+        if index == winner_index {
+            log += &format!(" <-- WINNER\n");
+        } else {
+            log += &format!("\n");
+        };
     }
 
-    println!("\n\nResults - [log:{}]:", logname);
+    println!("\n\nResults - log file: {}:", logname);
     println!("{}", log);
 
     match std::fs::write(logname, log) {
         Ok(_) => {}
         Err(_) => { println!("Could not save log file sof some reason."); }
     };
-}
-
-fn calc_player_round_score(line: &String) -> Result<i16, Error> {
-    let mut round_score = 0;
-
-    for colour in line.split(' ') {
-        let colour = colour.trim();
-
-        match calc_expedition_score(&colour.to_string()) {
-            Ok(score) => round_score += score,
-            Err(Error::CardError(card)) => { return Result::Err(Error::CardError(card)); }
-        };
-    }
-
-    Result::Ok(round_score)
 }
 
 fn create_game_log_name() -> String {
@@ -113,6 +146,67 @@ fn create_game_log_name() -> String {
             return logname;
         };
     }
+}
+
+fn sanity_check_player_cards(user_input: &str) -> bool {
+    let mut is_input_valid = true;
+    let mut expedition_count = 0;
+
+    match user_input {
+        "\n" | "" => {
+            println!("User must have cards!");
+            return false;
+        },
+        _ => {},
+    };
+
+    for expedition in user_input.split(' ') {
+        expedition_count += 1;
+        
+        if expedition_count > 6 {
+            println!("Too many expeditions. Count: {}, Cards: {}", expedition_count, user_input);
+            is_input_valid = false;
+            break
+        };
+        
+        let mut valid_cards = vec!['d', 'd', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't', '\n'];
+
+        'card_loop: for card in expedition.chars() {
+
+            for index in 0..valid_cards.len() {
+                if card == valid_cards[index] {
+                    valid_cards.remove(index);
+                    continue 'card_loop;
+                };
+            };
+
+            println!("Bad or duplicate card: \"{}\"", card);
+            is_input_valid = false;
+            break;
+        };
+    };
+
+    is_input_valid
+}
+
+fn calc_player_round_score(line: &String) -> Result<LoggedResult, Error> {
+    let mut round_score = 0;
+    let mut logtext = String::from("        Round breakdown:\n");
+
+    for colour in line.split(' ') {
+        let colour = colour.trim();
+
+        match calc_expedition_score(&colour.to_string()) {
+            Ok(score) => {
+                round_score += score;
+                let logline = format!("            expedition: {}, score: {}\n", colour, score);
+                logtext += &logline.as_str();
+            },
+            Err(Error::CardError(card)) => { return Result::Err(Error::CardError(card)); }
+        };
+    }
+
+    Result::Ok(LoggedResult { result: round_score, logtext: logtext })
 }
 
 fn calc_expedition_score(cards_text: &String) -> Result<i16, Error> {
@@ -167,11 +261,29 @@ fn test_calc_expedition_score() {
 
 #[test]
 fn test_calc_player_round_score() {
-    assert_eq!(calc_player_round_score(&"28t 28t".to_string()).unwrap(), 0);
-    assert_eq!(calc_player_round_score(&"d d d d d".to_string()).unwrap(), -200);
-    assert_eq!(calc_player_round_score(&"dd dd dd dd dd".to_string()).unwrap(), -300);
-    assert_eq!(calc_player_round_score(&"ddd d ddd d ddd".to_string()).unwrap(), -320);
-    assert_eq!(calc_player_round_score(&"2 d34 dd456 ddd5678 ddd23456789t".to_string()).unwrap(), 121);
-    assert_eq!(calc_player_round_score(&"ddd23456789t".to_string()).unwrap(), 156);
-    assert_eq!(calc_player_round_score(&"ddd23456789t ddd23456789t ddd23456789t ddd23456789t ddd23456789t".to_string()).unwrap(), 780);
+    assert_eq!(calc_player_round_score(&"28t 28t".to_string()).unwrap().result, 0);
+    assert_eq!(calc_player_round_score(&"d d d d d".to_string()).unwrap().result, -200);
+    assert_eq!(calc_player_round_score(&"dd dd dd dd dd".to_string()).unwrap().result, -300);
+    assert_eq!(calc_player_round_score(&"ddd d ddd d ddd".to_string()).unwrap().result, -320);
+    assert_eq!(calc_player_round_score(&"2 d34 dd456 ddd5678 ddd23456789t".to_string()).unwrap().result, 121);
+    assert_eq!(calc_player_round_score(&"ddd23456789t".to_string()).unwrap().result, 156);
+    assert_eq!(calc_player_round_score(&"ddd23456789t ddd23456789t ddd23456789t ddd23456789t ddd23456789t".to_string()).unwrap().result, 780);
+    assert_eq!(calc_player_round_score(&"45789t dd3458t d23478t".to_string()).unwrap().result, 81);
+    assert_eq!(calc_player_round_score(&"d234689 d23569t 69 dd56789t".to_string()).unwrap().result, 144);
+}
+
+#[test]
+fn test_sanity_check_player_cards() {
+    assert_eq!(sanity_check_player_cards(&"2 3 4 5 6 7 8 9"), false);
+    assert_eq!(sanity_check_player_cards(&"dddd"), false);
+    assert_eq!(sanity_check_player_cards(&"23x"), false);
+    assert_eq!(sanity_check_player_cards(&"2 2 2 2s"), false);
+    assert_eq!(sanity_check_player_cards(&"2 2 2 2"), true);
+    assert_eq!(sanity_check_player_cards(&""), false);
+    assert_eq!(sanity_check_player_cards(&"d23 dd345 ddd45678 ddd 23456y"), false);
+    assert_eq!(sanity_check_player_cards(&"dddd"), false);
+    assert_eq!(sanity_check_player_cards(&"dd23456789t dd23456789t"), true);
+    assert_eq!(sanity_check_player_cards(&"t98765432ddd t98765432ddd"), true);
+    assert_eq!(sanity_check_player_cards(&"t98765432dddt98765432ddd"), false);
+    assert_eq!(sanity_check_player_cards(&"t98765432ddd t987654932ddd"), false);
 }
