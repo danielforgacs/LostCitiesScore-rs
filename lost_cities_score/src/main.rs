@@ -29,9 +29,9 @@ fn main() {
 
     println!(
         "===== Lost Cities Scores Counter =====\n\
-        type 'quit' to finish the game. \
-        \ncards can be: d=double, t=10, 2-9\n\
-        game log name:\n{}\n\
+        type 'quit' to quit the game. \
+        \ncards can be: d = double, t = 10, 2-9\n\
+        game log file:\n{}\n\
         ========================================",
         logname
     );
