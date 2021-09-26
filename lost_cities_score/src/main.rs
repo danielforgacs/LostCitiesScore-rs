@@ -40,7 +40,7 @@ fn main() {
     let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 0..=2 {
-        let logline = format!("=================================================\nRound {}:\n", round+1);
+        let logline = format!("=================================================\n>>>>>>>>>>> ROUND: {} <<<<<<<<<<<\n", round+1);
         print!("{}", logline);
         log += logline.as_str();
 
