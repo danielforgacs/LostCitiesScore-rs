@@ -96,7 +96,7 @@ fn main() {
 
 
         }
-        let mut logtext = "_________________________________________________\n-------------------------------------------------".to_string();
+        let mut logtext = "_________________________________________________".to_string();
         logtext += format!("\nplayer 1 score: {} - total: {}", round_scores[0], players[0].score).as_str();
         logtext += format!("\nplayer 2 score: {} - total: {}\n", round_scores[1], players[1].score).as_str();
         print!("{}", logtext);
