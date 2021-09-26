@@ -45,7 +45,7 @@ fn main() {
         log += logline.as_str();
 
         for player_number in 0..=1 {
-            players[player_number].score += loop {
+            let round_score = loop {
                 let logline = format!("   player {} cards: ", player_number + 1);
                 print!("{}", logline);
 
@@ -84,11 +84,16 @@ fn main() {
                         let logline = format!("{}", user_input);
                         log += &logline.as_str();
                         log += &result.logtext.as_str();
+                        // println!("round score: {}", score);
                         break score
                     },
                     Err(Error::CardError(card)) => { println!("Bad card: \"{:?}\"!", card); },
                 };
             };
+
+            players[player_number].score += round_score;
+            println!("> round score: {}", round_score);
+
 
         }
         // println!("-------------------------------------------------");
