@@ -29,10 +29,10 @@ fn main() {
 
     println!(
         "===== Lost Cities Scores Counter =====\n\
-        type 'quit' to finish the game. \
-        \ncards can be: d=double, t=10, 2-9\n\
-        game log name:\n{}\n\
-        ========================================\n",
+        type 'quit' to quit the game. \
+        \ncards can be: d = double, t = 10, 2-9\n\
+        game log file:\n{}\n\
+        ========================================",
         logname
     );
 
@@ -40,13 +40,15 @@ fn main() {
     let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 0..=2 {
-        let logline = format!("\
-            =================================================\nRound {}:\n", round+1);
+        let logline = format!("=================================================\n\
+            >>>>>>>>>>> ROUND: {} <<<<<<<<<<<\n", round+1);
         print!("{}", logline);
         log += logline.as_str();
+        let mut round_scores: Vec<i16> = Vec::new();
+        let mut round_breakdowns: Vec<String> = Vec::new();
 
         for player_number in 0..=1 {
-            players[player_number].score += loop {
+            let round_score = loop {
                 let logline = format!("   player {} cards: ", player_number + 1);
                 print!("{}", logline);
 
@@ -85,16 +87,26 @@ fn main() {
                         let logline = format!("{}", user_input);
                         log += &logline.as_str();
                         log += &result.logtext.as_str();
+                        round_breakdowns.push(result.logtext);
                         break score
                     },
                     Err(Error::CardError(card)) => { println!("Bad card: \"{:?}\"!", card); },
                 };
             };
 
+            players[player_number].score += round_score;
+            round_scores.push(round_score);
+
+
         }
-        println!("-------------------------------------------------");
-        println!("player 1 score: {}", players[0].score);
-        println!("player 2 score: {}", players[1].score);
+        let mut logtext = "_________________________________________________".to_string();
+        logtext += format!("\nplayer 1 score: {} - total: {}", round_scores[0], players[0].score).as_str();
+        logtext += format!("\nplayer 2 score: {} - total: {}\n", round_scores[1], players[1].score).as_str();
+        print!("{}", logtext);
+        log += &logtext.as_str();
+
+        // print!("player 1 {}", round_breakdowns[0]);
+        // print!("player 2 {}", round_breakdowns[1]);
     }
 
     let mut winner_index = 0;
@@ -103,8 +115,11 @@ fn main() {
         winner_index = 1;
     };
 
+    log += &"____________________________________________\n\
+        ============================================\n".to_string();
+
     for (index, player) in players.iter().enumerate() {
-        log += &format!("player {} score: {}", index + 1, player.score).as_str();
+        log += &format!("player {} total score: {}", index + 1, player.score).as_str();
 
         if index == winner_index {
             log += &format!(" <-- WINNER\n");
