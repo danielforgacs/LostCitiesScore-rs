@@ -96,9 +96,6 @@ fn main() {
 
 
         }
-        // println!("-------------------------------------------------");
-        // println!("player 1 score: {}", players[0].score);
-        // println!("player 2 score: {}", players[1].score);
         let mut logtext = "-------------------------------------------------".to_string();
         logtext += format!("\nplayer 1 score: {}", players[0].score).as_str();
         logtext += format!("\nplayer 2 score: {}\n", players[1].score).as_str();
