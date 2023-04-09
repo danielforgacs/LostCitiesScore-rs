@@ -65,17 +65,13 @@ fn main() {
                     _ => {},
                 }
 
-                match user_input.as_str() {
-                    "quit\n" => {
-                        println!("Bye!");
-                        return;
-                    },
-                    _ => {},
-                };
+                if user_input.as_str() == "quit\n" {
+                    println!("Bye!");
+                    return;
+                }
 
-                match sanity_check_player_cards(&user_input) {
-                    true => {}
-                    false => { continue }
+                if !sanity_check_player_cards(&user_input) {
+                    continue;
                 }
 
                 log += logline.as_str();
@@ -84,7 +80,7 @@ fn main() {
                     Ok(result) => {
                         println!("{}", result.logtext);
                         let score = result.result;
-                        let logline = format!("{}", user_input);
+                        let logline = user_input.to_string();
                         log += logline.as_str();
                         log += result.logtext.as_str();
                         round_breakdowns.push(result.logtext);
