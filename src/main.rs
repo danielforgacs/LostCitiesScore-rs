@@ -47,7 +47,7 @@ fn main() {
         let mut round_scores: Vec<i16> = Vec::new();
         let mut round_breakdowns: Vec<String> = Vec::new();
 
-        for player_number in 0..=1 {
+        for (player_number, player) in players.iter_mut().enumerate() {
             let round_score = loop {
                 let logline = format!("   player {} cards: ", player_number + 1);
                 print!("{}", logline);
@@ -87,7 +87,7 @@ fn main() {
                 };
             };
 
-            players[player_number].score += round_score;
+            player.score += round_score;
             round_scores.push(round_score);
 
 
