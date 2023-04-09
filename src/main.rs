@@ -57,12 +57,9 @@ fn main() {
                 let mut user_input = String::new();
                 let stdin_result = io::stdin().read_line(&mut user_input);
 
-                match stdin_result {
-                    Err(err) => {
-                        println!("Could not read player input! Error: {}", err);
-                        return;
-                    },
-                    _ => {},
+                if let Err(err) = stdin_result {
+                    println!("Could not read player input! Error: {}", err);
+                    return;
                 }
 
                 if user_input.as_str() == "quit\n" {
