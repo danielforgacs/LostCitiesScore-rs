@@ -162,13 +162,13 @@ fn sanity_check_player_cards(user_input: &str) -> bool {
 
     for expedition in user_input.split(' ') {
         expedition_count += 1;
-        
+
         if expedition_count > 6 {
             println!("Too many expeditions. Count: {}, Cards: {}", expedition_count, user_input);
             is_input_valid = false;
             break
         };
-        
+
         let mut valid_cards = vec!['d', 'd', 'd', '2', '3', '4', '5', '6', '7', '8', '9', 't', '\n'];
 
         'card_loop: for card in expedition.chars() {
@@ -231,59 +231,64 @@ fn calc_expedition_score(cards_text: &String) -> Result<i16, Error> {
     Result::Ok(score)
 }
 
-#[test]
-fn test_calc_expedition_score() {
-    assert_eq!(calc_expedition_score(&"5".to_string()).unwrap(), -15);
-    assert_eq!(calc_expedition_score(&"d5".to_string()).unwrap(), -30);
-    assert_eq!(calc_expedition_score(&"dd5".to_string()).unwrap(), -45);
-    assert_eq!(calc_expedition_score(&"d".to_string()).unwrap(), -40);
-    assert_eq!(calc_expedition_score(&"dd".to_string()).unwrap(), -60);
-    assert_eq!(calc_expedition_score(&"ddd".to_string()).unwrap(), -80);
-    assert_eq!(calc_expedition_score(&"2345678".to_string()).unwrap(), 2 + 3 + 4 + 5 + 6 + 7 + 8 - 20);
-    assert_eq!(calc_expedition_score(&"23456789".to_string()).unwrap(), 44 - 20 + 20);
-    assert_eq!(calc_expedition_score(&"23456789t".to_string()).unwrap(), 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 - 20 + 20);
-    assert_eq!(calc_expedition_score(&"7891".to_string()).unwrap(), 14);
-    assert_eq!(calc_expedition_score(&"d7891".to_string()).unwrap(), 14 * 2);
-    assert_eq!(calc_expedition_score(&"dd7891".to_string()).unwrap(), 14 * 3);
-    assert_eq!(calc_expedition_score(&"dd789t".to_string()).unwrap(), 14 * 3);
-    assert_eq!(calc_expedition_score(&"2".to_string()).unwrap(), -18);
-    assert_eq!(calc_expedition_score(&"23".to_string()).unwrap(), -20 + 2 + 3);
-    assert_eq!(calc_expedition_score(&"234".to_string()).unwrap(), -20 + 2 + 3 + 4);
-    assert_eq!(calc_expedition_score(&"23456789".to_string()).unwrap(), -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 20);
-    assert_eq!(calc_expedition_score(&"2345678".to_string()).unwrap(), -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8);
-    assert_eq!(calc_expedition_score(&"d23456789".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 2) + 20);
-    assert_eq!(calc_expedition_score(&"dd23456789".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 3) + 20);
-    assert_eq!(calc_expedition_score(&"ddd23456789".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 4) + 20);
-    assert_eq!(calc_expedition_score(&"ddd2345678".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8) * 4) + 20);
-    assert_eq!(calc_expedition_score(&"ddd23456".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6) * 4) + 20);
-    assert_eq!(calc_expedition_score(&"ddd2345".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5) * 4));
-}
+#[cfg(test)]
+mod test {
+    use super::*;
 
-#[test]
-fn test_calc_player_round_score() {
-    assert_eq!(calc_player_round_score(&"28t 28t".to_string()).unwrap().result, 0);
-    assert_eq!(calc_player_round_score(&"d d d d d".to_string()).unwrap().result, -200);
-    assert_eq!(calc_player_round_score(&"dd dd dd dd dd".to_string()).unwrap().result, -300);
-    assert_eq!(calc_player_round_score(&"ddd d ddd d ddd".to_string()).unwrap().result, -320);
-    assert_eq!(calc_player_round_score(&"2 d34 dd456 ddd5678 ddd23456789t".to_string()).unwrap().result, 121);
-    assert_eq!(calc_player_round_score(&"ddd23456789t".to_string()).unwrap().result, 156);
-    assert_eq!(calc_player_round_score(&"ddd23456789t ddd23456789t ddd23456789t ddd23456789t ddd23456789t".to_string()).unwrap().result, 780);
-    assert_eq!(calc_player_round_score(&"45789t dd3458t d23478t".to_string()).unwrap().result, 81);
-    assert_eq!(calc_player_round_score(&"d234689 d23569t 69 dd56789t".to_string()).unwrap().result, 144);
-}
+    #[test]
+    fn test_calc_expedition_score() {
+        assert_eq!(calc_expedition_score(&"5".to_string()).unwrap(), -15);
+        assert_eq!(calc_expedition_score(&"d5".to_string()).unwrap(), -30);
+        assert_eq!(calc_expedition_score(&"dd5".to_string()).unwrap(), -45);
+        assert_eq!(calc_expedition_score(&"d".to_string()).unwrap(), -40);
+        assert_eq!(calc_expedition_score(&"dd".to_string()).unwrap(), -60);
+        assert_eq!(calc_expedition_score(&"ddd".to_string()).unwrap(), -80);
+        assert_eq!(calc_expedition_score(&"2345678".to_string()).unwrap(), 2 + 3 + 4 + 5 + 6 + 7 + 8 - 20);
+        assert_eq!(calc_expedition_score(&"23456789".to_string()).unwrap(), 44 - 20 + 20);
+        assert_eq!(calc_expedition_score(&"23456789t".to_string()).unwrap(), 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 - 20 + 20);
+        assert_eq!(calc_expedition_score(&"7891".to_string()).unwrap(), 14);
+        assert_eq!(calc_expedition_score(&"d7891".to_string()).unwrap(), 14 * 2);
+        assert_eq!(calc_expedition_score(&"dd7891".to_string()).unwrap(), 14 * 3);
+        assert_eq!(calc_expedition_score(&"dd789t".to_string()).unwrap(), 14 * 3);
+        assert_eq!(calc_expedition_score(&"2".to_string()).unwrap(), -18);
+        assert_eq!(calc_expedition_score(&"23".to_string()).unwrap(), -20 + 2 + 3);
+        assert_eq!(calc_expedition_score(&"234".to_string()).unwrap(), -20 + 2 + 3 + 4);
+        assert_eq!(calc_expedition_score(&"23456789".to_string()).unwrap(), -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 20);
+        assert_eq!(calc_expedition_score(&"2345678".to_string()).unwrap(), -20 + 2 + 3 + 4 + 5 + 6 + 7 + 8);
+        assert_eq!(calc_expedition_score(&"d23456789".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 2) + 20);
+        assert_eq!(calc_expedition_score(&"dd23456789".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 3) + 20);
+        assert_eq!(calc_expedition_score(&"ddd23456789".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 4) + 20);
+        assert_eq!(calc_expedition_score(&"ddd2345678".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6 + 7 + 8) * 4) + 20);
+        assert_eq!(calc_expedition_score(&"ddd23456".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5 + 6) * 4) + 20);
+        assert_eq!(calc_expedition_score(&"ddd2345".to_string()).unwrap(), ((-20 + 2 + 3 + 4 + 5) * 4));
+    }
 
-#[test]
-fn test_sanity_check_player_cards() {
-    assert_eq!(sanity_check_player_cards(&"2 3 4 5 6 7 8 9"), false);
-    assert_eq!(sanity_check_player_cards(&"dddd"), false);
-    assert_eq!(sanity_check_player_cards(&"23x"), false);
-    assert_eq!(sanity_check_player_cards(&"2 2 2 2s"), false);
-    assert_eq!(sanity_check_player_cards(&"2 2 2 2"), true);
-    assert_eq!(sanity_check_player_cards(&""), false);
-    assert_eq!(sanity_check_player_cards(&"d23 dd345 ddd45678 ddd 23456y"), false);
-    assert_eq!(sanity_check_player_cards(&"dddd"), false);
-    assert_eq!(sanity_check_player_cards(&"dd23456789t dd23456789t"), true);
-    assert_eq!(sanity_check_player_cards(&"t98765432ddd t98765432ddd"), true);
-    assert_eq!(sanity_check_player_cards(&"t98765432dddt98765432ddd"), false);
-    assert_eq!(sanity_check_player_cards(&"t98765432ddd t987654932ddd"), false);
+    #[test]
+    fn test_calc_player_round_score() {
+        assert_eq!(calc_player_round_score(&"28t 28t".to_string()).unwrap().result, 0);
+        assert_eq!(calc_player_round_score(&"d d d d d".to_string()).unwrap().result, -200);
+        assert_eq!(calc_player_round_score(&"dd dd dd dd dd".to_string()).unwrap().result, -300);
+        assert_eq!(calc_player_round_score(&"ddd d ddd d ddd".to_string()).unwrap().result, -320);
+        assert_eq!(calc_player_round_score(&"2 d34 dd456 ddd5678 ddd23456789t".to_string()).unwrap().result, 121);
+        assert_eq!(calc_player_round_score(&"ddd23456789t".to_string()).unwrap().result, 156);
+        assert_eq!(calc_player_round_score(&"ddd23456789t ddd23456789t ddd23456789t ddd23456789t ddd23456789t".to_string()).unwrap().result, 780);
+        assert_eq!(calc_player_round_score(&"45789t dd3458t d23478t".to_string()).unwrap().result, 81);
+        assert_eq!(calc_player_round_score(&"d234689 d23569t 69 dd56789t".to_string()).unwrap().result, 144);
+    }
+
+    #[test]
+    fn test_sanity_check_player_cards() {
+        assert_eq!(sanity_check_player_cards(&"2 3 4 5 6 7 8 9"), false);
+        assert_eq!(sanity_check_player_cards(&"dddd"), false);
+        assert_eq!(sanity_check_player_cards(&"23x"), false);
+        assert_eq!(sanity_check_player_cards(&"2 2 2 2s"), false);
+        assert_eq!(sanity_check_player_cards(&"2 2 2 2"), true);
+        assert_eq!(sanity_check_player_cards(&""), false);
+        assert_eq!(sanity_check_player_cards(&"d23 dd345 ddd45678 ddd 23456y"), false);
+        assert_eq!(sanity_check_player_cards(&"dddd"), false);
+        assert_eq!(sanity_check_player_cards(&"dd23456789t dd23456789t"), true);
+        assert_eq!(sanity_check_player_cards(&"t98765432ddd t98765432ddd"), true);
+        assert_eq!(sanity_check_player_cards(&"t98765432dddt98765432ddd"), false);
+        assert_eq!(sanity_check_player_cards(&"t98765432ddd t987654932ddd"), false);
+    }
 }
