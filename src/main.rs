@@ -97,9 +97,6 @@ fn main() {
         logtext += format!("\nplayer 2 score: {} - total: {}\n", round_scores[1], players[1].score).as_str();
         print!("{}", logtext);
         log += logtext.as_str();
-
-        // print!("player 1 {}", round_breakdowns[0]);
-        // print!("player 2 {}", round_breakdowns[1]);
     }
 
     let mut winner_index = 0;
