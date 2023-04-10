@@ -1,3 +1,4 @@
+use clap::{Command, Arg};
 use chrono::{DateTime, Utc};
 use std::io::{self, Write};
 
@@ -5,6 +6,7 @@ const GAME_LOG_FILE_NAME: &str = "LostCitiesScores";
 const GAME_LOG_DATE_TEMPLATE: &str = "%Y-%m-%d_%H-%M-%S";
 
 struct Player {
+    name: String,
     score: i16,
 }
 
@@ -14,8 +16,8 @@ enum Error {
 }
 
 impl Player {
-    fn new() -> Self {
-        Player { score: 0 }
+    fn new(name: String) -> Self {
+        Player { name, score: 0 }
     }
 }
 
@@ -25,6 +27,11 @@ struct LoggedResult {
 }
 
 fn main() {
+    let players = get_players();
+    if players[0] == "" || players[0] == "" {
+        return;
+    }
+    let mut players = [Player::new(players[0].clone()), Player::new(players[1].clone())];
     let logname = create_game_log_name();
     println!(
         "===== Lost Cities Scores Counter =====\n\
@@ -36,7 +43,6 @@ fn main() {
     );
 
     let mut log = String::new();
-    let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 0..=2 {
         let logline = format!(
@@ -49,9 +55,9 @@ fn main() {
         let mut round_scores: Vec<i16> = Vec::new();
         let mut round_breakdowns: Vec<String> = Vec::new();
 
-        for (player_number, player) in players.iter_mut().enumerate() {
+        for (_, player) in players.iter_mut().enumerate() {
             let round_score = loop {
-                let logline = format!("   player {} cards: ", player_number + 1);
+                let logline = format!("   {} cards: ", player.name);
                 print!("{}", logline);
 
                 io::stdout().flush().unwrap();
@@ -96,13 +102,13 @@ fn main() {
         }
         let mut logtext = "_________________________________________________".to_string();
         logtext += format!(
-            "\nplayer 1 score: {} - total: {}",
-            round_scores[0], players[0].score
+            "\n{} score: {} - total: {}",
+            players[0].name, round_scores[0], players[0].score
         )
         .as_str();
         logtext += format!(
-            "\nplayer 2 score: {} - total: {}\n",
-            round_scores[1], players[1].score
+            "\n{} score: {} - total: {}\n",
+            players[1].name, round_scores[1], players[1].score
         )
         .as_str();
         print!("{}", logtext);
@@ -119,7 +125,7 @@ fn main() {
         ============================================\n";
 
     for (index, player) in players.iter().enumerate() {
-        log += format!("player {} total score: {}", index + 1, player.score).as_str();
+        log += format!("{} total score: {}", player.name, player.score).as_str();
 
         if index == winner_index {
             log += " <-- WINNER\n";
@@ -137,6 +143,34 @@ fn main() {
             println!("Could not save log file sof some reason.");
         }
     };
+}
+
+fn get_players() -> [String; 2] {
+    let mut players = [String::new(), String::new()];
+    let matches = Command::new(std::env!("CARGO_PKG_NAME"))
+        .version(std::env!("CARGO_PKG_VERSION"))
+        .args([
+            Arg::new("player 1")
+            .required(true),
+            Arg::new("player 2")
+            .required(true),
+        ])
+        .get_matches();
+    players[0] = match matches.get_one::<String>("player 1") {
+        Some(name) => name.to_string(),
+        None => {
+            println!("Player 1's name is required!");
+            return players;
+        }
+    };
+    players[1] = match matches.get_one::<String>("player 2") {
+        Some(name) => name.to_string(),
+        None => {
+            println!("Player 2's name is required!");
+            return players;
+        }
+    };
+    players
 }
 
 fn create_game_log_name() -> String {

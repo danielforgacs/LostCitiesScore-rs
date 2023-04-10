@@ -1,9 +1,10 @@
 [package]
 name = "lost_cities_score"
-version = "2023.4.9"
+version = "2023.4.10"
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-chrono = "0.4"
+chrono = "0.4.24"
+clap = "4.2.1"
