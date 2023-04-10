@@ -28,10 +28,32 @@ struct LoggedResult {
 fn main() {
     let matches = Command::new(std::env!("CARGO_PKG_NAME"))
         .version(std::env!("CARGO_PKG_VERSION"))
-        // .arg(
-        //     Arg::new("player 1")
-        // )
+        .arg(
+            Arg::new("player 1")
+            .required(true)
+        )
+        .arg(
+            Arg::new("player 2")
+            .required(true)
+        )
         .get_matches();
+    let player_1 = match matches.get_one::<String>("player 1") {
+        Some(name) => name,
+        None => {
+            println!("Player 1's name is required!");
+            return;
+        }
+    };
+    let player_2 = match matches.get_one::<String>("player 2") {
+        Some(name) => name,
+        None => {
+            println!("Player 2's name is required!");
+            return;
+        }
+    };
+
+
+
     let logname = create_game_log_name();
     println!(
         "===== Lost Cities Scores Counter =====\n\
