@@ -6,6 +6,7 @@ const GAME_LOG_FILE_NAME: &str = "LostCitiesScores";
 const GAME_LOG_DATE_TEMPLATE: &str = "%Y-%m-%d_%H-%M-%S";
 
 struct Player {
+    name: String,
     score: i16,
 }
 
@@ -15,8 +16,8 @@ enum Error {
 }
 
 impl Player {
-    fn new() -> Self {
-        Player { score: 0 }
+    fn new(name: String) -> Self {
+        Player { name, score: 0 }
     }
 }
 
@@ -26,10 +27,11 @@ struct LoggedResult {
 }
 
 fn main() {
-    let (player_1, player_2) = get_players();
-    if player_1 == "" || player_2 == "" {
+    let players = get_players();
+    if players[0] == "" || players[0] == "" {
         return;
     }
+    let mut players = [Player::new(players[0].clone()), Player::new(players[1].clone())];
     let logname = create_game_log_name();
     println!(
         "===== Lost Cities Scores Counter =====\n\
@@ -41,7 +43,6 @@ fn main() {
     );
 
     let mut log = String::new();
-    let mut players: [Player; 2] = [Player::new(), Player::new()];
 
     for round in 0..=2 {
         let logline = format!(
@@ -144,7 +145,8 @@ fn main() {
     };
 }
 
-fn get_players() -> (String, String) {
+fn get_players() -> [String; 2] {
+    let mut players = [String::new(), String::new()];
     let matches = Command::new(std::env!("CARGO_PKG_NAME"))
         .version(std::env!("CARGO_PKG_VERSION"))
         .args([
@@ -154,21 +156,21 @@ fn get_players() -> (String, String) {
             .required(true),
         ])
         .get_matches();
-    let player_1 = match matches.get_one::<String>("player 1") {
-        Some(name) => name,
+    players[0] = match matches.get_one::<String>("player 1") {
+        Some(name) => name.to_string(),
         None => {
             println!("Player 1's name is required!");
-            return (String::new(), String::new());
+            return players;
         }
     };
-    let player_2 = match matches.get_one::<String>("player 2") {
-        Some(name) => name,
+    players[1] = match matches.get_one::<String>("player 2") {
+        Some(name) => name.to_string(),
         None => {
             println!("Player 2's name is required!");
-            return (String::new(), String::new());
+            return players;
         }
     };
-    (player_1.to_string(), player_2.to_string())
+    players
 }
 
 fn create_game_log_name() -> String {
