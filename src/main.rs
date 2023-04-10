@@ -1,3 +1,4 @@
+use clap::{Command, Arg};
 use chrono::{DateTime, Utc};
 use std::io::{self, Write};
 
@@ -25,6 +26,12 @@ struct LoggedResult {
 }
 
 fn main() {
+    let matches = Command::new(std::env!("CARGO_PKG_NAME"))
+        .version(std::env!("CARGO_PKG_VERSION"))
+        // .arg(
+        //     Arg::new("player 1")
+        // )
+        .get_matches();
     let logname = create_game_log_name();
     println!(
         "===== Lost Cities Scores Counter =====\n\
