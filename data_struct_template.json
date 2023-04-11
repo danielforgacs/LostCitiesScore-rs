@@ -1,0 +1,42 @@
+{
+    "round 1": {
+        "Alpha": {
+            "cards": "d249t dd789t dd235678t d23456789",
+            "expeditions": [
+                {
+                    "cards": "d249t",
+                    "score": 10
+                },
+                {
+                    "cards": "dd789t",
+                    "score": 42
+                }
+            ]
+        },
+        "Beta": {
+            "cards": "d249t dd789t dd235678t d23456789",
+            "expeditions": []
+        }
+    },
+    "round 2": {
+        "Alpha": {
+            "cards": "d249t dd789t dd235678t d23456789",
+            "expeditions": []
+        },
+        "Beta": {
+            "cards": "d249t dd789t dd235678t d23456789",
+            "expeditions": []
+        }
+    },
+    "round 3": {
+        "Alpha": {
+            "cards": "d249t dd789t dd235678t d23456789",
+            "expeditions": []
+        },
+        "Beta": {
+            "cards": "d249t dd789t dd235678t d23456789",
+            "expeditions": []
+        }
+    },
+    "winner": "Alpha"
+}
