@@ -102,7 +102,7 @@ fn main() {
                 }
 
                 game_data[round_name][player_key]["cards"] = Value::from(user_input.trim());
-                std::fs::write(&data_name, game_data.to_string());
+                std::fs::write(&data_name, game_data.to_string()).expect("CAN NOT SAVE GAME DATA!");
 
 
                 log += logline.as_str();
@@ -110,8 +110,8 @@ fn main() {
 
                 match calc_player_round_score(&user_input, &mut expeditions_data) {
                     Ok(result) => {
-                        game_data[round_name][player_key]["expeditions"] = Value::from(expeditions_data);
-                        std::fs::write(&data_name, game_data.to_string());
+                        game_data[round_name][player_key]["expeditions"] = expeditions_data;
+                        std::fs::write(&data_name, game_data.to_string()).expect("CAN NOT SAVE GAME DATA!");
 
                         println!("{}", result.logtext);
                         let score = result.result;
