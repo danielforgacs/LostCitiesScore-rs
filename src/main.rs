@@ -1,6 +1,7 @@
 use clap::{Command, Arg};
 use chrono::{DateTime, Utc};
 use std::io::{self, Write};
+use serde_json::json;
 
 const GAME_LOG_FILE_NAME: &str = "LostCitiesScores";
 const GAME_LOG_DATE_TEMPLATE: &str = "%Y-%m-%d_%H-%M-%S";
@@ -43,6 +44,7 @@ fn main() {
     );
 
     let mut log = String::new();
+    let mut game_data = json!({});
 
     for round in 0..=2 {
         let logline = format!(
@@ -50,12 +52,31 @@ fn main() {
             >>>>>>>>>>> ROUND: {} <<<<<<<<<<<\n",
             round + 1
         );
+
+        let round_name = match round {
+            0 => "round 1",
+            1 => "round 2",
+            2 => "round 3",
+            _ => panic!("WRONG ROUND NUMBER"),
+        };
+
         print!("{}", logline);
         log += logline.as_str();
         let mut round_scores: Vec<i16> = Vec::new();
         let mut round_breakdowns: Vec<String> = Vec::new();
 
-        for (_, player) in players.iter_mut().enumerate() {
+        for (player_id, player) in players.iter_mut().enumerate() {
+            let player_key = match player_id {
+                0 => "player 1",
+                1 => "player 2",
+                _ => panic!("WRONG PLAYER ID"),
+            };
+            game_data[round_name] = json!({
+                player_key: {}
+            });
+
+            std::fs::write("game.json", game_data.to_string());
+
             let round_score = loop {
                 let logline = format!("   {} cards: ", player.name);
                 print!("{}", logline);
