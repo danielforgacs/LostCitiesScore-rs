@@ -38,5 +38,13 @@
             "expeditions": []
         }
     },
+    "player 1": {
+        "name": "Alpha",
+        "score": 472
+    },
+    "player 2": {
+        "name": "Beta",
+        "score": 210
+    }
     "winner": "Alpha"
 }
