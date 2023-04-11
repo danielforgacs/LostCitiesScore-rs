@@ -1,7 +1,7 @@
 use clap::{Command, Arg};
 use chrono::{DateTime, Utc};
 use std::io::{self, Write};
-use serde_json::json;
+use serde_json::{json, Value};
 
 const GAME_LOG_FILE_NAME: &str = "LostCitiesScores";
 const GAME_LOG_DATE_TEMPLATE: &str = "%Y-%m-%d_%H-%M-%S";
@@ -101,16 +101,18 @@ fn main() {
                     continue;
                 }
 
-                game_data[round_name][player_key] = json!({
-                        "cards": user_input.trim(),
-                });
+                game_data[round_name][player_key]["cards"] = Value::from(user_input.trim());
                 std::fs::write(&data_name, game_data.to_string());
 
 
                 log += logline.as_str();
+                let mut expeditions_data = json!([]);
 
-                match calc_player_round_score(&user_input) {
+                match calc_player_round_score(&user_input, &mut expeditions_data) {
                     Ok(result) => {
+                        game_data[round_name][player_key]["expeditions"] = Value::from(expeditions_data);
+                        std::fs::write(&data_name, game_data.to_string());
+
                         println!("{}", result.logtext);
                         let score = result.result;
                         let logline = user_input.to_string();
@@ -261,7 +263,7 @@ fn sanity_check_player_cards(user_input: &str) -> bool {
     is_input_valid
 }
 
-fn calc_player_round_score(line: &str) -> Result<LoggedResult, Error> {
+fn calc_player_round_score(line: &str, expeditions_data: &mut Value) -> Result<LoggedResult, Error> {
     let mut round_score = 0;
     let mut logtext = String::from("        Round breakdown:\n");
 
