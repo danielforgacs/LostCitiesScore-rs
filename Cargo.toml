@@ -8,3 +8,4 @@ edition = "2018"
 [dependencies]
 chrono = "0.4.24"
 clap = "4.2.1"
+serde_json = "1.0.95"
