@@ -106,7 +106,7 @@ fn main() {
 
 
                 log += logline.as_str();
-                let mut expeditions_data = json!([]);
+                let mut expeditions_data = Value::Array(Vec::new());
 
                 match calc_player_round_score(&user_input, &mut expeditions_data) {
                     Ok(result) => {
@@ -272,6 +272,10 @@ fn calc_player_round_score(line: &str, expeditions_data: &mut Value) -> Result<L
 
         match calc_expedition_score(&colour.to_string()) {
             Ok(score) => {
+                expeditions_data.as_array_mut().unwrap().push(json!({
+                    "cards": colour,
+                    "score": score
+                }));
                 round_score += score;
                 let logline = format!("            expedition: {}, score: {}\n", colour, score);
                 logtext += logline.as_str();
