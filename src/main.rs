@@ -34,6 +34,7 @@ fn main() {
     }
     let mut players = [Player::new(players[0].clone()), Player::new(players[1].clone())];
     let logname = create_game_log_name();
+    let data_name = logname.replace(".txt", ".json");
     println!(
         "===== Lost Cities Scores Counter =====\n\
         type 'quit' to quit the game. \
@@ -71,11 +72,11 @@ fn main() {
                 1 => "player 2",
                 _ => panic!("WRONG PLAYER ID"),
             };
-            game_data[round_name] = json!({
-                player_key: {}
-            });
+            // game_data[round_name] = json!({
+            //     player_key: {}
+            // });
 
-            std::fs::write("game.json", game_data.to_string());
+            // std::fs::write(data_name, game_data.to_string());
 
             let round_score = loop {
                 let logline = format!("   {} cards: ", player.name);
@@ -99,6 +100,12 @@ fn main() {
                 if !sanity_check_player_cards(&user_input) {
                     continue;
                 }
+
+                game_data[round_name][player_key] = json!({
+                        "cards": user_input.trim(),
+                });
+                std::fs::write(&data_name, game_data.to_string());
+
 
                 log += logline.as_str();
 
