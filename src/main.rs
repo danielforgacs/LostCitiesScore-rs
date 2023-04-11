@@ -29,7 +29,7 @@ struct LoggedResult {
 
 fn main() {
     let players = get_players();
-    if players[0] == "" || players[0] == "" {
+    if players[0].is_empty() || players[1].is_empty() {
         return;
     }
     let mut players = [Player::new(players[0].clone()), Player::new(players[1].clone())];
