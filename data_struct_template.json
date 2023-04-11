@@ -1,6 +1,6 @@
 {
     "round 1": {
-        "Alpha": {
+        "player 1": {
             "cards": "d249t dd789t dd235678t d23456789",
             "expeditions": [
                 {
@@ -13,27 +13,27 @@
                 }
             ]
         },
-        "Beta": {
+        "player 2": {
             "cards": "d249t dd789t dd235678t d23456789",
             "expeditions": []
         }
     },
     "round 2": {
-        "Alpha": {
+        "player 1": {
             "cards": "d249t dd789t dd235678t d23456789",
             "expeditions": []
         },
-        "Beta": {
+        "player 2": {
             "cards": "d249t dd789t dd235678t d23456789",
             "expeditions": []
         }
     },
     "round 3": {
-        "Alpha": {
+        "player 1": {
             "cards": "d249t dd789t dd235678t d23456789",
             "expeditions": []
         },
-        "Beta": {
+        "player 2": {
             "cards": "d249t dd789t dd235678t d23456789",
             "expeditions": []
         }
@@ -45,6 +45,6 @@
     "player 2": {
         "name": "Beta",
         "score": 210
-    }
+    },
     "winner": "Alpha"
 }
