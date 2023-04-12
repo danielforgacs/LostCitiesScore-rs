@@ -279,7 +279,7 @@ fn calc_player_round_score(line: &str, expeditions_data: &mut Value) -> Result<L
 
         match calc_expedition_score(&colour.to_string()) {
             Ok(score) => {
-                expeditions_data.as_array_mut().unwrap().push(json!({
+                expeditions_data.as_array_mut().expect("[ERROR] CAN NOT GET JSON ARRAY!").push(json!({
                     "cards": colour,
                     "score": score
                 }));
@@ -403,57 +403,58 @@ mod test {
     #[test]
     fn test_calc_player_round_score() {
         assert_eq!(
-            calc_player_round_score(&"28t 28t".to_string())
+            calc_player_round_score(&"28t 28t".to_string(), &mut json!([]))
                 .unwrap()
                 .result,
             0
         );
         assert_eq!(
-            calc_player_round_score(&"d d d d d".to_string())
+            calc_player_round_score(&"d d d d d".to_string(), &mut json!([]))
                 .unwrap()
                 .result,
             -200
         );
         assert_eq!(
-            calc_player_round_score(&"dd dd dd dd dd".to_string())
+            calc_player_round_score(&"dd dd dd dd dd".to_string(), &mut json!([]))
                 .unwrap()
                 .result,
             -300
         );
         assert_eq!(
-            calc_player_round_score(&"ddd d ddd d ddd".to_string())
+            calc_player_round_score(&"ddd d ddd d ddd".to_string(), &mut json!([]))
                 .unwrap()
                 .result,
             -320
         );
         assert_eq!(
-            calc_player_round_score(&"2 d34 dd456 ddd5678 ddd23456789t".to_string())
+            calc_player_round_score(&"2 d34 dd456 ddd5678 ddd23456789t".to_string(), &mut json!([]))
                 .unwrap()
                 .result,
             121
         );
         assert_eq!(
-            calc_player_round_score(&"ddd23456789t".to_string())
+            calc_player_round_score(&"ddd23456789t".to_string(), &mut json!([]))
                 .unwrap()
                 .result,
             156
         );
         assert_eq!(
             calc_player_round_score(
-                &"ddd23456789t ddd23456789t ddd23456789t ddd23456789t ddd23456789t".to_string()
+                &"ddd23456789t ddd23456789t ddd23456789t ddd23456789t ddd23456789t".to_string(),
+                &mut json!([])
             )
             .unwrap()
             .result,
             780
         );
         assert_eq!(
-            calc_player_round_score(&"45789t dd3458t d23478t".to_string())
+            calc_player_round_score(&"45789t dd3458t d23478t".to_string(), &mut json!([]))
                 .unwrap()
                 .result,
             81
         );
         assert_eq!(
-            calc_player_round_score(&"d234689 d23569t 69 dd56789t".to_string())
+            calc_player_round_score(&"d234689 d23569t 69 dd56789t".to_string(), &mut json!([]))
                 .unwrap()
                 .result,
             144
