@@ -130,6 +130,9 @@ fn main() {
 
             player.score += round_score;
             round_scores.push(round_score);
+            game_data[round_name][player_key]["score"] = round_score.into();
+            std::fs::write(&data_name, game_data.to_string()).expect("CAN NOT SAVE GAME DATA!");
+
         }
         let mut logtext = "_________________________________________________".to_string();
         logtext += format!(
