@@ -134,6 +134,10 @@ fn main() {
             std::fs::write(&data_name, game_data.to_string()).expect("CAN NOT SAVE GAME DATA!");
 
         }
+        game_data[round_name]["player 1"]["total"] = players[0].score.into();
+        game_data[round_name]["player 2"]["total"] = players[1].score.into();
+        std::fs::write(&data_name, game_data.to_string()).expect("CAN NOT SAVE GAME DATA!");
+
         let mut logtext = "_________________________________________________".to_string();
         logtext += format!(
             "\n{} score: {} - total: {}",
