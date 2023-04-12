@@ -1,7 +1,7 @@
-use clap::{Command, Arg};
 use chrono::{DateTime, Utc};
-use std::io::{self, Write};
+use clap::{Arg, Command};
 use serde_json::{json, Value};
+use std::io::{self, Write};
 
 const GAME_LOG_FILE_NAME: &str = "LostCitiesScores";
 const GAME_LOG_DATE_TEMPLATE: &str = "%Y-%m-%d_%H-%M-%S";
@@ -33,7 +33,10 @@ fn main() {
     if players[0].is_empty() || players[1].is_empty() {
         return;
     }
-    let mut players = [Player::new(players[0].clone()), Player::new(players[1].clone())];
+    let mut players = [
+        Player::new(players[0].clone()),
+        Player::new(players[1].clone()),
+    ];
     let logname = create_game_log_name();
     let data_name = logname.replace(".txt", ".json");
     println!(
@@ -102,17 +105,23 @@ fn main() {
                     continue;
                 }
 
-                game_data[round_name][player_key]["cards"] = Value::from(user_input.trim());
-                std::fs::write(&data_name, game_data.to_string()).expect("CAN NOT SAVE GAME DATA!");
-
+                game_data[round_name][player_key]["cards"] =
+                    Value::from(user_input.trim());
+                std::fs::write(&data_name, game_data.to_string())
+                    .expect("CAN NOT SAVE GAME DATA!");
 
                 log += logline.as_str();
                 let mut expeditions_data = Value::Array(Vec::new());
 
-                match calc_player_round_score(&user_input, &mut expeditions_data) {
+                match calc_player_round_score(
+                    &user_input,
+                    &mut expeditions_data,
+                ) {
                     Ok(result) => {
-                        game_data[round_name][player_key]["expeditions"] = expeditions_data;
-                        std::fs::write(&data_name, game_data.to_string()).expect("CAN NOT SAVE GAME DATA!");
+                        game_data[round_name][player_key]["expeditions"] =
+                            expeditions_data;
+                        std::fs::write(&data_name, game_data.to_string())
+                            .expect("CAN NOT SAVE GAME DATA!");
 
                         println!("{}", result.logtext);
                         let score = result.result;
@@ -131,14 +140,16 @@ fn main() {
             player.score += round_score;
             round_scores.push(round_score);
             game_data[round_name][player_key]["score"] = round_score.into();
-            std::fs::write(&data_name, game_data.to_string()).expect("CAN NOT SAVE GAME DATA!");
-
+            std::fs::write(&data_name, game_data.to_string())
+                .expect("CAN NOT SAVE GAME DATA!");
         }
         game_data[round_name]["player 1"]["total"] = players[0].score.into();
         game_data[round_name]["player 2"]["total"] = players[1].score.into();
-        std::fs::write(&data_name, game_data.to_string()).expect("CAN NOT SAVE GAME DATA!");
+        std::fs::write(&data_name, game_data.to_string())
+            .expect("CAN NOT SAVE GAME DATA!");
 
-        let mut logtext = "_________________________________________________".to_string();
+        let mut logtext =
+            "_________________________________________________".to_string();
         logtext += format!(
             "\n{} score: {} - total: {}",
             players[0].name, round_scores[0], players[0].score
@@ -163,7 +174,8 @@ fn main() {
         ============================================\n";
 
     for (index, player) in players.iter().enumerate() {
-        log += format!("{} total score: {}", player.name, player.score).as_str();
+        log +=
+            format!("{} total score: {}", player.name, player.score).as_str();
 
         if index == winner_index {
             log += " <-- WINNER\n";
@@ -179,7 +191,8 @@ fn main() {
     println!("\n\nResults - log file: {}:", logname);
     println!("{}", log);
 
-    std::fs::write(&data_name, game_data.to_string()).expect("CAN NOT SAVE GAME DATA!");
+    std::fs::write(&data_name, game_data.to_string())
+        .expect("CAN NOT SAVE GAME DATA!");
 
     match std::fs::write(logname, log) {
         Ok(_) => {}
@@ -194,10 +207,8 @@ fn get_players() -> [String; 2] {
     let matches = Command::new(std::env!("CARGO_PKG_NAME"))
         .version(std::env!("CARGO_PKG_VERSION"))
         .args([
-            Arg::new("player 1")
-            .required(true),
-            Arg::new("player 2")
-            .required(true),
+            Arg::new("player 1").required(true),
+            Arg::new("player 2").required(true),
         ])
         .get_matches();
     players[0] = match matches.get_one::<String>("player 1") {
@@ -277,7 +288,10 @@ fn sanity_check_player_cards(user_input: &str) -> bool {
     is_input_valid
 }
 
-fn calc_player_round_score(line: &str, expeditions_data: &mut Value) -> Result<LoggedResult, Error> {
+fn calc_player_round_score(
+    line: &str,
+    expeditions_data: &mut Value,
+) -> Result<LoggedResult, Error> {
     let mut round_score = 0;
     let mut logtext = String::from("        Round breakdown:\n");
 
@@ -286,12 +300,18 @@ fn calc_player_round_score(line: &str, expeditions_data: &mut Value) -> Result<L
 
         match calc_expedition_score(&colour.to_string()) {
             Ok(score) => {
-                expeditions_data.as_array_mut().expect("[ERROR] CAN NOT GET JSON ARRAY!").push(json!({
-                    "cards": colour,
-                    "score": score
-                }));
+                expeditions_data
+                    .as_array_mut()
+                    .expect("[ERROR] CAN NOT GET JSON ARRAY!")
+                    .push(json!({
+                        "cards": colour,
+                        "score": score
+                    }));
                 round_score += score;
-                let logline = format!("            expedition: {}, score: {}\n", colour, score);
+                let logline = format!(
+                    "            expedition: {}, score: {}\n",
+                    colour, score
+                );
                 logtext += logline.as_str();
             }
             Err(Error::CardError(card)) => {
@@ -355,7 +375,10 @@ mod test {
             2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 - 20 + 20
         );
         assert_eq!(calc_expedition_score(&"7891".to_string()).unwrap(), 14);
-        assert_eq!(calc_expedition_score(&"d7891".to_string()).unwrap(), 14 * 2);
+        assert_eq!(
+            calc_expedition_score(&"d7891".to_string()).unwrap(),
+            14 * 2
+        );
         assert_eq!(
             calc_expedition_score(&"dd7891".to_string()).unwrap(),
             14 * 3
@@ -422,48 +445,58 @@ mod test {
             -200
         );
         assert_eq!(
-            calc_player_round_score(&"dd dd dd dd dd".to_string(), &mut json!([]))
-                .unwrap()
-                .result,
-            -300
-        );
-        assert_eq!(
-            calc_player_round_score(&"ddd d ddd d ddd".to_string(), &mut json!([]))
-                .unwrap()
-                .result,
-            -320
-        );
-        assert_eq!(
-            calc_player_round_score(&"2 d34 dd456 ddd5678 ddd23456789t".to_string(), &mut json!([]))
-                .unwrap()
-                .result,
-            121
-        );
-        assert_eq!(
-            calc_player_round_score(&"ddd23456789t".to_string(), &mut json!([]))
-                .unwrap()
-                .result,
-            156
-        );
-        assert_eq!(
             calc_player_round_score(
-                &"ddd23456789t ddd23456789t ddd23456789t ddd23456789t ddd23456789t".to_string(),
+                &"dd dd dd dd dd".to_string(),
                 &mut json!([])
             )
             .unwrap()
             .result,
-            780
+            -300
         );
         assert_eq!(
-            calc_player_round_score(&"45789t dd3458t d23478t".to_string(), &mut json!([]))
-                .unwrap()
-                .result,
+            calc_player_round_score(
+                &"ddd d ddd d ddd".to_string(),
+                &mut json!([])
+            )
+            .unwrap()
+            .result,
+            -320
+        );
+        assert_eq!(
+            calc_player_round_score(
+                &"2 d34 dd456 ddd5678 ddd23456789t".to_string(),
+                &mut json!([])
+            )
+            .unwrap()
+            .result,
+            121
+        );
+        assert_eq!(
+            calc_player_round_score(
+                &"ddd23456789t".to_string(),
+                &mut json!([])
+            )
+            .unwrap()
+            .result,
+            156
+        );
+        assert_eq!(calc_player_round_score(&"ddd23456789t ddd23456789t ddd23456789t ddd23456789t ddd23456789t".to_string(), &mut json!([])).unwrap().result, 780);
+        assert_eq!(
+            calc_player_round_score(
+                &"45789t dd3458t d23478t".to_string(),
+                &mut json!([])
+            )
+            .unwrap()
+            .result,
             81
         );
         assert_eq!(
-            calc_player_round_score(&"d234689 d23569t 69 dd56789t".to_string(), &mut json!([]))
-                .unwrap()
-                .result,
+            calc_player_round_score(
+                &"d234689 d23569t 69 dd56789t".to_string(),
+                &mut json!([])
+            )
+            .unwrap()
+            .result,
             144
         );
     }
