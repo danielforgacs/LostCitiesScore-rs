@@ -6,6 +6,7 @@ use serde_json::{json, Value};
 const GAME_LOG_FILE_NAME: &str = "LostCitiesScores";
 const GAME_LOG_DATE_TEMPLATE: &str = "%Y-%m-%d_%H-%M-%S";
 
+#[derive(serde::Serialize)]
 struct Player {
     name: String,
     score: i16,
@@ -159,13 +160,19 @@ fn main() {
 
         if index == winner_index {
             log += " <-- WINNER\n";
+            game_data["winner"] = Value::String(player.name.clone());
         } else {
             log += "\n";
         };
     }
 
+    game_data["player 1"] = json!(players[0]);
+    game_data["player 2"] = json!(players[1]);
+
     println!("\n\nResults - log file: {}:", logname);
     println!("{}", log);
+
+    std::fs::write(&data_name, game_data.to_string()).expect("CAN NOT SAVE GAME DATA!");
 
     match std::fs::write(logname, log) {
         Ok(_) => {}
